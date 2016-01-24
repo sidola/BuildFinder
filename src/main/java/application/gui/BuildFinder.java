@@ -5,12 +5,15 @@ import java.util.Locale;
 import org.controlsfx.control.StatusBar;
 
 import application.BuildDataManager;
+import application.config.AppConfig;
+import application.gui.component.ExceptionDialog;
 import application.gui.component.StatusBarProgressBar;
 import application.gui.controller.MainController;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -41,6 +44,7 @@ public class BuildFinder extends Application {
     //
     // ----------------------------------------------
 
+    private static AppConfig appConfig;
     public HostServices hostServices;
     private MainController mainController = new MainController(this);
 
@@ -63,7 +67,6 @@ public class BuildFinder extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         // Set language
         Locale.setDefault(Locale.ENGLISH);
 
@@ -89,7 +92,8 @@ public class BuildFinder extends Application {
         scene.getStylesheets().add(css);
 
         // Bind CTRL+F key-combo to search
-        final KeyCodeCombination focusFilterFieldCombo = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+        final KeyCodeCombination focusFilterFieldCombo = new KeyCodeCombination(KeyCode.F,
+                KeyCombination.CONTROL_DOWN);
         scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -100,18 +104,28 @@ public class BuildFinder extends Application {
                 }
             }
         });
-        
+
         primaryStage.setTitle("BuildFinder");
         primaryStage.getIcons().add(new Image(BuildFinder.class.getClassLoader()
                 .getResourceAsStream("icon/app_icon.png")));
 
         primaryStage.setScene(scene);
         primaryStage.show();
-        
-        // Shut down the JVM to catch any still running threads
-        primaryStage.setOnCloseRequest(e -> {
+
+        // Load config
+        try {
+            appConfig = AppConfig.getAppConfig();
+        } catch (Exception e) {
+            ExceptionDialog exceptionDialog = new ExceptionDialog(AlertType.ERROR,
+                    "Could not parse the config file. Make sure you're only using string values."
+                            + "\n\nIf you have no clue what you're doing, simply"
+                            + " delete the config.json file in the data folder and a new one will be created for you.",
+                    e);
+
+            exceptionDialog.initOwner(primaryStage);
+            exceptionDialog.showAndWait();
             System.exit(0);
-        });
+        }
     }
 
     // ----------------------------------------------
@@ -132,6 +146,13 @@ public class BuildFinder extends Application {
      */
     public StatusBarProgressBar getStatusBarProgressBar() {
         return statusBarProgressBar;
+    }
+
+    /**
+     * Returns the {@link AppConfig}.
+     */
+    public static AppConfig getAppConfig() {
+        return appConfig;
     }
 
 }

@@ -12,7 +12,6 @@ import org.controlsfx.control.StatusBar;
 
 import application.BuildDataManager;
 import application.Scraper;
-import application.Scraper.FetchMode;
 import application.gui.BuildFinder;
 import application.gui.component.StatusBarProgressBar;
 import application.model.BuildInfo;
@@ -29,7 +28,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
@@ -70,8 +68,7 @@ public final class MainController {
     private TableColumn<BuildInfo, String> nameColumn = new TableColumn<>("Name");
     private TableColumn<BuildInfo, Hyperlink> urlColumn = new TableColumn<>("Link");
 
-    private Button refreshBuildsButton = new Button("Refresh builds");
-    private Button newBuildsButton = new Button("Fetch new builds");
+    private Button updateBuildsButton = new Button("Update builds");
 
     // Grab from main
     private StatusBar statusBar;
@@ -86,8 +83,8 @@ public final class MainController {
     private BuildFinder mainReference;
     private ObservableList<BuildInfo> tableBuildList = FXCollections
             .observableArrayList();
-    private String currentlyFilteredItem  = "";
-    
+    private String currentlyFilteredItem = "";
+
     // ----------------------------------------------
     //
     // Constructor
@@ -141,15 +138,14 @@ public final class MainController {
         VBox.setVgrow(itemFilterListView, Priority.ALWAYS);
 
         // ---------------------------------
-        // Configure refresh & new builds buttons
+        // Configure update builds button
         // ---------------------------------
-        setupRefreshBuildButtons();
+        setupUpdateBuildsButton();
 
-        HBox buttonHBox = new HBox(10, refreshBuildsButton, newBuildsButton);
+        HBox buttonHBox = new HBox(10, updateBuildsButton);
         rightVBox.getChildren().add(buttonHBox);
 
-        HBox.setHgrow(refreshBuildsButton, Priority.ALWAYS);
-        HBox.setHgrow(newBuildsButton, Priority.ALWAYS);
+        HBox.setHgrow(updateBuildsButton, Priority.ALWAYS);
 
         // ---------------------------------
         // Put left & right sides into a wrapper
@@ -202,7 +198,7 @@ public final class MainController {
         if (currentlyFilteredItem.equals(item)) {
             return;
         }
-        
+
         currentlyFilteredItem = item;
         Set<BuildInfo> matchingBuilds = BuildDataManager.getBuildsWithItem(item);
 
@@ -244,37 +240,25 @@ public final class MainController {
 
     /**
      * Used to toggle the build buttons based on which button is pressed. The
-     * pressed button gets the text 'Cancel', and the other button becomes
+     * pressed button gets the text 'Cancel', and the other buttons becomes
      * disabled for the duration of the action.
      * 
      * <p>
      * Reverses the logic if called again
      * </p>
      * 
+     * TODO: This method should be removed since we only have one button now.
+     * 
      * @param pressedButton
      *            The {@link Button} that was pressed.
      */
     private void toggleBuildButtons(Button pressedButton) {
-        if (pressedButton == refreshBuildsButton) {
-
-            if (refreshBuildsButton.getText().equals("Cancel")) {
-                refreshBuildsButton.setText("Refresh builds");
-                newBuildsButton.setDisable(false);
+        if (pressedButton == updateBuildsButton) {
+            if (updateBuildsButton.getText().equals("Cancel")) {
+                updateBuildsButton.setText("Update builds");
             } else {
-                refreshBuildsButton.setText("Cancel");
-                newBuildsButton.setDisable(true);
+                updateBuildsButton.setText("Cancel");
             }
-
-        } else {
-
-            if (newBuildsButton.getText().equals("Cancel")) {
-                newBuildsButton.setText("Fetch new builds");
-                refreshBuildsButton.setDisable(false);
-            } else {
-                newBuildsButton.setText("Cancel");
-                refreshBuildsButton.setDisable(true);
-            }
-
         }
     }
 
@@ -448,17 +432,12 @@ public final class MainController {
     }
 
     /**
-     * Configures the two {@link Button}s on the right side that are used to
-     * fetch new builds and update the current builds.
+     * Configures the update builds button.
      */
-    private void setupRefreshBuildButtons() {
-        refreshBuildsButton.setMaxWidth(Double.MAX_VALUE);
-        newBuildsButton.setMaxWidth(Double.MAX_VALUE);
-
-        refreshBuildsButton.setOnAction(
-                new FetchBuildsHandler(refreshBuildsButton, FetchMode.REFRESH));
-        newBuildsButton
-                .setOnAction(new FetchBuildsHandler(newBuildsButton, FetchMode.NEW));
+    private void setupUpdateBuildsButton() {
+        updateBuildsButton.setMaxWidth(Double.MAX_VALUE);
+        updateBuildsButton.setPrefHeight(30);
+        updateBuildsButton.setOnAction(new FetchBuildsHandler(updateBuildsButton));
     }
 
     // ----------------------------------------------
@@ -468,16 +447,17 @@ public final class MainController {
     // ----------------------------------------------
 
     /**
-     * {@link EventHandler} for the refresh and fetch build buttons.
+     * {@link EventHandler} for the update builds button.
+     * 
+     * TODO: Rewrite this handler, was initial created for two different
+     * actions, thus the button field.
      */
     public class FetchBuildsHandler implements EventHandler<ActionEvent> {
 
         private Button button;
-        private FetchMode mode;
 
-        public FetchBuildsHandler(Button button, FetchMode mode) {
+        public FetchBuildsHandler(Button button) {
             this.button = button;
-            this.mode = mode;
         }
 
         @Override
@@ -501,15 +481,23 @@ public final class MainController {
 
             toggleBuildButtons(button);
 
-            Scraper scraper = new Scraper(BuildDataManager.getBuildInfoSet(), mode);
+            Scraper scraper = new Scraper(BuildDataManager.getBuildInfoSet());
             button.setUserData(scraper);
 
             statusBarProgressBar.setTask(scraper);
 
-            new Thread(scraper).start();
+            Thread thread = new Thread(scraper);
+            thread.setDaemon(true);
+            thread.start();
+
             statusBarProgressBar.show();
 
             scraper.setOnSucceeded(f -> {
+                // Something failed, disable further attempts to fetch data
+                if (!scraper.getValue()) {
+                    button.setDisable(true);
+                }
+
                 BuildDataManager.updateLastUpdatedDate();
                 BuildDataManager.saveBuilds();
 

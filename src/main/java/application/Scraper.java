@@ -13,6 +13,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import application.config.AppConfig;
+import application.gui.BuildFinder;
 import application.model.BuildGear;
 import application.model.BuildInfo;
 import application.model.D3Class;
@@ -21,9 +23,14 @@ import javafx.concurrent.Task;
 /**
  * Takes care of scraping HTML information and extracting the relevant data.
  * 
+ * <p>
+ * <b>Note:</b> Has a static block that loads the configuration file for how
+ * scraping should be performed.
+ * </p>
+ * 
  * @author Sid Botvin
  */
-public final class Scraper extends Task<Integer> {
+public final class Scraper extends Task<Boolean> {
 
     // ----------------------------------------------
     //
@@ -31,9 +38,37 @@ public final class Scraper extends Task<Integer> {
     //
     // ----------------------------------------------
 
-    private final static String BASELINE_URL = "http://www.diablofans.com";
     private Set<BuildInfo> buildInfoSet;
-    private FetchMode fetchMode;
+
+    private final static String BASELINE_URL = "http://www.diablofans.com";
+    private final static AppConfig configuration;
+    private final static String FETCH_URL;
+
+    // ----------------------------------------------
+    //
+    // Static block
+    //
+    // ----------------------------------------------
+
+    static {
+        configuration = BuildFinder.getAppConfig();
+
+        StringBuilder fetchUrlBuilder = new StringBuilder();
+        fetchUrlBuilder.append("http://www.diablofans.com/builds?");
+
+        if (!configuration.getBuildType().equals("0")) {
+            fetchUrlBuilder.append("filter-build-type=" + configuration.getBuildType());
+        }
+
+        if (!configuration.getBuildPatch().equals("0")) {
+            fetchUrlBuilder.append("&filter-build=" + configuration.getBuildPatch());
+        }
+
+        fetchUrlBuilder.append("&filter-build-tag=" + configuration.getDateRange());
+        fetchUrlBuilder.append("&sort=" + configuration.getFilterType());
+
+        FETCH_URL = fetchUrlBuilder.toString();
+    }
 
     // ----------------------------------------------
     //
@@ -41,9 +76,8 @@ public final class Scraper extends Task<Integer> {
     //
     // ----------------------------------------------
 
-    public Scraper(Set<BuildInfo> buildInfoSet, FetchMode fetchMode) {
+    public Scraper(Set<BuildInfo> buildInfoSet) {
         this.buildInfoSet = buildInfoSet;
-        this.fetchMode = fetchMode;
     }
 
     // ----------------------------------------------
@@ -64,6 +98,9 @@ public final class Scraper extends Task<Integer> {
         long workDone = 1;
         updateProgress(workDone, buildSet.size());
         for (BuildInfo buildInfo : buildSet) {
+            if (isCancelled()) {
+                break;
+            }
 
             updateMessage("Downloading build " + workDone + " of " + buildSet.size());
             processBuildInfo(buildInfo);
@@ -82,46 +119,42 @@ public final class Scraper extends Task<Integer> {
         Set<BuildInfo> builds = new HashSet<BuildInfo>();
 
         for (D3Class thisClass : D3Class.values()) {
-            updateProgress(0, 1);
-            updateMessage("Fetching " + thisClass.toString() + " builds");
+            if (isCancelled()) {
+                break;
+            }
 
+            // Skip any classes that aren't found in the config
+            if (!configuration.getClasses().contains(thisClass)) {
+                continue;
+            }
+
+            updateProgress(0, 1);
             int id = thisClass.getClassFilterId();
 
-            String fetchUrl = "http://www.diablofans.com/builds?filter-build-type=2"
-                    + "&filter-build=6&filter-has-spell-2=-1"
-                    + "&filter-build-tag=5&filter-class=" + id + "&sort=-viewcount";
+            String currentFetchUrl = FETCH_URL;
+            currentFetchUrl += "&filter-class=" + id;
 
-            builds.addAll(getBuilds(fetchUrl));
+            if (configuration.getPages() == 1) {
+                updateMessage("Fetching " + thisClass.toString() + " builds");
+                builds.addAll(getBuilds(currentFetchUrl));
+            } else {
+                currentFetchUrl += "&page=";
+                for (int i = 1; i <= configuration.getPages(); i++) {
+                    String statusMessage = "Fetching " + thisClass.toString()
+                            + " builds, page " + i + " of " + configuration.getPages();
+                    updateMessage(statusMessage);
+
+                    builds.addAll(getBuilds(currentFetchUrl + i));
+                }
+            }
+
         }
 
-        buildInfoSet.clear();
-        buildInfoSet.addAll(builds);
-    }
-
-    /**
-     * Refresh the contents of all currently stored build.
-     */
-    public void refreshBuilds() {
-        long workDone = 1;
-        updateProgress(workDone, buildInfoSet.size());
-
-        Set<BuildInfo> newBuildInfoSet = new HashSet<>();
-
-        for (BuildInfo buildInfo : buildInfoSet) {
-
-            BuildInfo newBuildInfo = new BuildInfo(buildInfo.getD3Class(),
-                    buildInfo.getBuildUrl());
-            updateMessage("Updating build " + workDone + " of " + buildInfoSet.size());
-
-            processBuildInfo(newBuildInfo);
-            newBuildInfoSet.add(newBuildInfo);
-
-            updateProgress(workDone, buildInfoSet.size());
-            workDone++;
+        // Only overwrite the stored builds if we finished normally
+        if (!isCancelled()) {
+            buildInfoSet.clear();
+            buildInfoSet.addAll(builds);
         }
-
-        buildInfoSet.clear();
-        buildInfoSet.addAll(newBuildInfoSet);
     }
 
     // ----------------------------------------------
@@ -131,20 +164,13 @@ public final class Scraper extends Task<Integer> {
     // ----------------------------------------------
 
     @Override
-    protected Integer call() throws Exception {
-
-        switch (fetchMode) {
-        case REFRESH:
-            refreshBuilds();
-            break;
-        case NEW:
-            fetchNewBuilds();
-            break;
-        default:
-            throw new IllegalStateException("Could not identify the fetch-mode.");
+    protected Boolean call() throws Exception {
+        if (configuration == null) {
+            return false;
         }
 
-        return null;
+        fetchNewBuilds();
+        return true;
     }
 
     // ----------------------------------------------
@@ -162,7 +188,7 @@ public final class Scraper extends Task<Integer> {
     private static Document getDocument(String stringUrl) {
 
         try {
-            
+
             URL url = new URL(stringUrl);
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(url.openStream(), "UTF-8"));
@@ -296,21 +322,6 @@ public final class Scraper extends Task<Integer> {
      */
     private static String getRawText(Elements elements) {
         return elements.text().replaceAll("’", "'");
-    }
-
-    // ----------------------------------------------
-    //
-    // Inner classes & enums
-    //
-    // ----------------------------------------------
-
-    /**
-     * Defines the fetch-mode that should be used when getting new builds.
-     * REFRESH only refreshes the current builds. NEW wipes all current builds
-     * fetches new ones.
-     */
-    public enum FetchMode {
-        REFRESH, NEW;
     }
 
 }

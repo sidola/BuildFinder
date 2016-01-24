@@ -1,0 +1,32 @@
+/* Remove scroll-bar */
+.table-view .scroll-bar:horizontal .increment-arrow,
+.table-view .scroll-bar:horizontal .decrement-arrow,
+.table-view .scroll-bar:horizontal .increment-button,
+.table-view .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
+}
+
+/* Remove focus-glow on controls */
+.table-view:focused,
+.list-view:focused {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0.0,1.0;
+}
+
+/* Style hyperlink */
+.hyperlink {
+    -fx-text-fill: #3d3d3d;
+    -fx-outline: none;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected .table-cell .hyperlink {
+    -fx-text-fill: white;
+}
+
+/* Table cells */
+.table-view:focused .table-row-cell:filled:selected, 
+.list-view:focused .list-cell:filled:selected {
+    -fx-background: transparent;
+    -fx-background-color: rgba(0.0, 150.0, 201.0, 1.0);
+    -fx-text-fill: white;
+}

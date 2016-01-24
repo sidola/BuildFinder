@@ -107,6 +107,11 @@ public class BuildFinder extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+        
+        // Shut down the JVM to catch any still running threads
+        primaryStage.setOnCloseRequest(e -> {
+            System.exit(0);
+        });
     }
 
     // ----------------------------------------------

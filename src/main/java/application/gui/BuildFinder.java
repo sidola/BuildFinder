@@ -72,7 +72,7 @@ public class BuildFinder extends Application {
         hostServices = getHostServices();
 
         // Setup status bar
-        statusBar.setText(BuildDataManager.getDataInfo());
+        statusBar.setText(" " + BuildDataManager.getDataInfo());
         statusBar.setMaxHeight(15);
         statusBar.getRightItems().add(statusBarProgressBar);
         statusBarProgressBar.hide();

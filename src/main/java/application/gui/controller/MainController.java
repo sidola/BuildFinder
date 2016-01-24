@@ -488,7 +488,7 @@ public final class MainController {
                 Scraper scraper = (Scraper) button.getUserData();
 
                 scraper.setOnCancelled(f -> {
-                    statusBar.setText(BuildDataManager.getDataInfo());
+                    statusBar.setText(" " + BuildDataManager.getDataInfo());
                     statusBarProgressBar.hide();
 
                     toggleBuildButtons(button);
@@ -513,7 +513,7 @@ public final class MainController {
                 BuildDataManager.updateLastUpdatedDate();
                 BuildDataManager.saveBuilds();
 
-                statusBar.setText(BuildDataManager.getDataInfo());
+                statusBar.setText(" " + BuildDataManager.getDataInfo());
                 statusBarProgressBar.hide();
 
                 toggleBuildButtons(button);

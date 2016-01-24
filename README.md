@@ -10,7 +10,7 @@ To use it, simply download it and run the `BuildFinder.jar` file. On first run, 
 
 ### Configure what builds to get
 
-In the `data` folder, there is a file called `config.jar`. This file defines what builds the program should download. Below are the valid settings for each option.
+In the `data` folder, there is a file called `config.json`. This file defines what builds the program should download. Below are the valid settings for each option.
 
 
 | *buildType*         	| *buildPatch*  	| *dateRange*  	| *filterType* 	| *pages* 	| *classes* (array) 	|

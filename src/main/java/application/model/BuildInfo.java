@@ -64,6 +64,38 @@ public class BuildInfo implements Serializable {
     //
     // ----------------------------------------------
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((d3Class == null) ? 0 : d3Class.hashCode());
+        result = prime * result + ((buildUrl == null) ? 0 : buildUrl.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof BuildInfo))
+            return false;
+        
+        BuildInfo other = (BuildInfo) obj;
+
+        
+        if (buildUrl == null) {
+            if (other.buildUrl != null)
+                return false;
+        } else if (!buildUrl.equals(other.buildUrl))
+            return false;
+        
+        if (d3Class != other.d3Class)
+            return false;
+        return true;
+    }
+    
     // ----------------------------------------------
     //
     // Serialization / Deserialization

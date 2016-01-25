@@ -51,7 +51,6 @@ public final class AppConfig {
 
             configFile.createNewFile();
             FileWriter fileWriter = new FileWriter(configFile);
-            System.out.println(createDefaultConfig().toString());
             createDefaultConfig().writeTo(fileWriter, WriterConfig.PRETTY_PRINT);
             fileWriter.close();
         }

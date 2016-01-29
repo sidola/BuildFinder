@@ -4,6 +4,8 @@ BuildFinder is an application that helps the user find builds that use a certain
 
 The filter function on the DiabloFans website doesn't take cubed items into account, and it's also much slower than searching locally once you've downloaded a batch of builds to search from.
 
+![Main view](http://i.imgur.com/c0Fvi6G.png)
+
 ## Download
 
 You can find the latest working release right here on Github. Check out the [releases page](https://github.com/sidola/BuildFinder/releases)!
@@ -43,10 +45,6 @@ Example config:
   ]
 }
 ```
-
-## Screenshot
-
-![Main view](http://i.imgur.com/c0Fvi6G.png)
 
 ## Building
 

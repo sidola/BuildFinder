@@ -5,10 +5,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.controlsfx.control.StatusBar;
 
 import application.BuildDataManager;
 import application.Scraper;
@@ -16,6 +15,7 @@ import application.gui.BuildFinder;
 import application.gui.component.StatusBarProgressBar;
 import application.model.BuildInfo;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -23,23 +23,31 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 
 /**
  * Controller class for the main view.
@@ -65,13 +73,13 @@ public final class MainController {
     private TableColumn<BuildInfo, Integer> scoreColumn = new TableColumn<>("Score");
     private TableColumn<BuildInfo, String> classColumn = new TableColumn<>("Class");
     private TableColumn<BuildInfo, Boolean> isCubedColumn = new TableColumn<>("In cube");
-    private TableColumn<BuildInfo, String> nameColumn = new TableColumn<>("Name");
+    private TableColumn<BuildInfo, BuildInfo> nameColumn = new TableColumn<>("Name");
     private TableColumn<BuildInfo, Hyperlink> urlColumn = new TableColumn<>("Link");
 
     private Button updateBuildsButton = new Button("Update builds");
+    private Button showFavoriteBuildsButton = new Button("Show favorite builds");
 
     // Grab from main
-    private StatusBar statusBar;
     private StatusBarProgressBar statusBarProgressBar;
 
     // ----------------------------------------------
@@ -97,8 +105,6 @@ public final class MainController {
      */
     public MainController(BuildFinder mainReference) {
         this.mainReference = mainReference;
-
-        statusBar = mainReference.getStatusBar();
         statusBarProgressBar = mainReference.getStatusBarProgressBar();
     }
 
@@ -135,17 +141,24 @@ public final class MainController {
         HBox.setHgrow(itemFilterField, Priority.ALWAYS);
 
         VBox rightVBox = new VBox(10, filterHBox, itemFilterListView);
+        rightVBox.setPrefWidth(280);
+        rightVBox.setMaxWidth(280);
         VBox.setVgrow(itemFilterListView, Priority.ALWAYS);
 
         // ---------------------------------
-        // Configure update builds button
+        // Configure update & favorite builds button
         // ---------------------------------
-        setupUpdateBuildsButton();
+        setupBuildsButtons();
+        
+        GridPane buttonGrid = new GridPane();
+        buttonGrid.setHgap(10);
+        buttonGrid.add(showFavoriteBuildsButton, 0, 0);
+        buttonGrid.add(updateBuildsButton, 1, 0);
+        
+        buttonGrid.getColumnConstraints().add(new ColumnConstraints(130));
+        buttonGrid.getColumnConstraints().add(new ColumnConstraints(130));
 
-        HBox buttonHBox = new HBox(10, updateBuildsButton);
-        rightVBox.getChildren().add(buttonHBox);
-
-        HBox.setHgrow(updateBuildsButton, Priority.ALWAYS);
+        rightVBox.getChildren().add(buttonGrid);
 
         // ---------------------------------
         // Put left & right sides into a wrapper
@@ -239,26 +252,13 @@ public final class MainController {
     }
 
     /**
-     * Used to toggle the build buttons based on which button is pressed. The
-     * pressed button gets the text 'Cancel', and the other buttons becomes
-     * disabled for the duration of the action.
-     * 
-     * <p>
-     * Reverses the logic if called again
-     * </p>
-     * 
-     * TODO: This method should be removed since we only have one button now.
-     * 
-     * @param pressedButton
-     *            The {@link Button} that was pressed.
+     * Toggles the text on the 'Update builds' button.
      */
-    private void toggleBuildButtons(Button pressedButton) {
-        if (pressedButton == updateBuildsButton) {
-            if (updateBuildsButton.getText().equals("Cancel")) {
-                updateBuildsButton.setText("Update builds");
-            } else {
-                updateBuildsButton.setText("Cancel");
-            }
+    private void toggleUpdateButton() {
+        if (updateBuildsButton.getText().equals("Cancel")) {
+            updateBuildsButton.setText("Update builds");
+        } else {
+            updateBuildsButton.setText("Cancel");
         }
     }
 
@@ -282,6 +282,69 @@ public final class MainController {
         buildTableView.getColumns().add(urlColumn);
         buildTableView.getColumns().add(nameColumn);
 
+        buildTableView.setRowFactory(tableView -> {
+            TableRow<BuildInfo> tableRow = new TableRow<>();
+
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem openBuild = new MenuItem("Open in browser...");
+            MenuItem toggleFavorite = new MenuItem("Toggle favorite");
+            MenuItem deleteBuild = new MenuItem("Delete build");
+
+            openBuild.setOnAction(e -> {
+                BuildInfo item = tableRow.getItem();
+                mainReference.getHostServices().showDocument(item.getBuildUrl().toString());                
+            });
+            
+            toggleFavorite.setOnAction(e -> {
+                BuildInfo item = tableRow.getItem();
+                item.setFavorite(!item.isFavorite());
+                BuildDataManager.saveBuilds();
+
+                // TODO: I don't know of another way to force-refresh the
+                // table-row without making the whole BuildInfo class an
+                // observable.
+                int selectedIndex = buildTableView.getSelectionModel().getSelectedIndex();
+                ObservableList<BuildInfo> items = buildTableView.getItems();
+                buildTableView.setItems(null);
+                buildTableView.layout();
+                buildTableView.setItems(items);
+                buildTableView.getSelectionModel().select(selectedIndex);
+
+                scoreColumn.setSortType(SortType.DESCENDING);
+                buildTableView.getSortOrder().clear();
+                buildTableView.getSortOrder().add(scoreColumn);
+            });
+
+            deleteBuild.setOnAction(e -> {
+                Alert confirmDeletion = new Alert(AlertType.CONFIRMATION);
+                confirmDeletion.initOwner(mainReference.getPrimaryStage());
+                confirmDeletion.setHeaderText(null);
+                confirmDeletion
+                        .setContentText("Are you sure you want to delete this build?");
+                Optional<ButtonType> result = confirmDeletion.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    BuildInfo item = tableRow.getItem();
+
+                    buildTableView.getItems().remove(item);
+                    BuildDataManager.deleteBuild(item);
+                    BuildDataManager.saveBuilds();
+
+                    mainReference.updateStatusBarText();
+                }
+            });
+
+            contextMenu.getItems().addAll(openBuild, toggleFavorite,
+                    new SeparatorMenuItem(), deleteBuild);
+
+            tableRow.contextMenuProperty().bind(Bindings.when(tableRow.emptyProperty())
+                    .then((ContextMenu) null).otherwise(contextMenu)
+
+            );
+
+            return tableRow;
+        });
+
         // Configure columns
         scoreColumn.setStyle("-fx-alignment: CENTER;");
         scoreColumn.setCellValueFactory(cellData -> {
@@ -297,50 +360,35 @@ public final class MainController {
 
         isCubedColumn.setStyle("-fx-alignment: CENTER;");
         isCubedColumn.setCellValueFactory(cellData -> {
-            return new ReadOnlyObjectWrapper<Boolean>(cellData.getValue().getBuildGear()
-                    .isCubed(itemFilterListView.getSelectionModel().getSelectedItem()));
+
+            // This handles the edge-case where user enters a valid item name in
+            // the filter box, receives builds, then enters an invalid name
+            // filter in the box, then tries to make changes to the items in the
+            // table via the context menu.
+
+            // In that situation, we'll fall back on the currentlyFilteredItem
+            // instead of getting a fresh item from the list.
+            String itemName = currentlyFilteredItem;
+            if (!itemFilterListView.getSelectionModel().isEmpty()) {
+                itemName = itemFilterListView.getSelectionModel().getSelectedItem();
+            }
+
+            // TODO: When the user views all their favorite builds, the
+            // 'IsCubed' column will default to 'No'. The behavior we want here
+            // is either to completely hide the 'IsCubed' column when we're
+            // viewing favorites, or set it to '-', not 'No'.
+
+            return new ReadOnlyObjectWrapper<Boolean>(
+                    cellData.getValue().getBuildGear().isCubed(itemName));
+
         });
-        isCubedColumn.setCellFactory(
-                new Callback<TableColumn<BuildInfo, Boolean>, TableCell<BuildInfo, Boolean>>() {
 
-                    @Override
-                    public TableCell<BuildInfo, Boolean> call(
-                            TableColumn<BuildInfo, Boolean> param) {
+        isCubedColumn.setCellFactory(c -> new IsCubedTableCell());
+        nameColumn.setCellFactory(c -> new NameTableCell());
 
-                        TableCell<BuildInfo, Boolean> cell = new TableCell<BuildInfo, Boolean>() {
-
-                            @Override
-                            protected void updateItem(Boolean item, boolean empty) {
-                                super.updateItem(item, empty);
-
-                                if (empty) {
-                                    setText(null);
-                                    setGraphic(null);
-                                    return;
-                                }
-
-                                if (item) {
-                                    setText(null);
-                                    setGraphic(
-                                            new ImageView(new Image(MainController.class
-                                                    .getClassLoader().getResourceAsStream(
-                                                            "icon/tick.png"))));
-                                } else {
-                                    setText("No");
-                                    setGraphic(null);
-                                }
-
-                            }
-
-                        };
-
-                        return cell;
-                    }
-                });
-
-        nameColumn.setStyle("-fx-alignment: CENTER;");
+        nameColumn.setStyle("-fx-alignment: CENTER-LEFT;");
         nameColumn.setCellValueFactory(cellData -> {
-            return new ReadOnlyObjectWrapper<String>(cellData.getValue().getBuildName());
+            return new SimpleObjectProperty<BuildInfo>(cellData.getValue());
         });
 
         urlColumn.setStyle("-fx-alignment: CENTER;");
@@ -432,12 +480,31 @@ public final class MainController {
     }
 
     /**
-     * Configures the update builds button.
+     * Configures the update & favorite builds button.
      */
-    private void setupUpdateBuildsButton() {
+    private void setupBuildsButtons() {
+        showFavoriteBuildsButton.setMaxWidth(Double.MAX_VALUE);
+        showFavoriteBuildsButton.setPrefHeight(30);
+        
         updateBuildsButton.setMaxWidth(Double.MAX_VALUE);
         updateBuildsButton.setPrefHeight(30);
+        
         updateBuildsButton.setOnAction(new FetchBuildsHandler(updateBuildsButton));
+        showFavoriteBuildsButton.setOnAction(e -> {
+            tableBuildList.clear();
+
+            Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
+            if (favoriteBuilds.isEmpty()) {
+                buildTableView.setPlaceholder(new Label("No favorite builds found"));
+                return;
+            }
+
+            tableBuildList.addAll(favoriteBuilds);
+
+            scoreColumn.setSortType(SortType.DESCENDING);
+            buildTableView.getSortOrder().clear();
+            buildTableView.getSortOrder().add(scoreColumn);
+        });
     }
 
     // ----------------------------------------------
@@ -448,17 +515,32 @@ public final class MainController {
 
     /**
      * {@link EventHandler} for the update builds button.
-     * 
-     * TODO: Rewrite this handler, was initial created for two different
-     * actions, thus the button field.
      */
     public class FetchBuildsHandler implements EventHandler<ActionEvent> {
 
+        // ----------------------------------------------
+        //
+        // Fields
+        //
+        // ----------------------------------------------
+
         private Button button;
+
+        // ----------------------------------------------
+        //
+        // Constructor
+        //
+        // ----------------------------------------------
 
         public FetchBuildsHandler(Button button) {
             this.button = button;
         }
+
+        // ----------------------------------------------
+        //
+        // Public API
+        //
+        // ----------------------------------------------
 
         @Override
         public void handle(ActionEvent event) {
@@ -468,10 +550,10 @@ public final class MainController {
                 Scraper scraper = (Scraper) button.getUserData();
 
                 scraper.setOnCancelled(f -> {
-                    statusBar.setText(" " + BuildDataManager.getDataInfo());
+                    mainReference.updateStatusBarText();
                     statusBarProgressBar.hide();
 
-                    toggleBuildButtons(button);
+                    toggleUpdateButton();
                     button.setUserData(null);
                 });
 
@@ -479,7 +561,19 @@ public final class MainController {
                 return;
             }
 
-            toggleBuildButtons(button);
+            Alert confirmFetch = new Alert(AlertType.CONFIRMATION);
+            confirmFetch.initOwner(mainReference.getPrimaryStage());
+            confirmFetch.setHeaderText(null);
+            confirmFetch.setContentText(
+                    "This action will overwrite all currently stored builds "
+                            + "except for the ones marked as favorites, do you want to continue?");
+
+            Optional<ButtonType> result = confirmFetch.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+                return;
+            }
+
+            toggleUpdateButton();
 
             Scraper scraper = new Scraper(BuildDataManager.getBuildInfoSet());
             button.setUserData(scraper);
@@ -493,18 +587,14 @@ public final class MainController {
             statusBarProgressBar.show();
 
             scraper.setOnSucceeded(f -> {
-                // Something failed, disable further attempts to fetch data
-                if (!scraper.getValue()) {
-                    button.setDisable(true);
-                }
-
                 BuildDataManager.updateLastUpdatedDate();
                 BuildDataManager.saveBuilds();
 
-                statusBar.setText(" " + BuildDataManager.getDataInfo());
+                mainReference.updateStatusBarText();
                 statusBarProgressBar.hide();
 
-                toggleBuildButtons(button);
+                toggleUpdateButton();
+                button.setUserData(null);
             });
 
         }
@@ -516,6 +606,12 @@ public final class MainController {
      * event-handler for mouse-clicks to filter the list.
      */
     public class FilterListCell extends ListCell<String> {
+
+        // ----------------------------------------------
+        //
+        // Protected API
+        //
+        // ----------------------------------------------
 
         @Override
         protected void updateItem(String item, boolean empty) {
@@ -537,6 +633,71 @@ public final class MainController {
 
                 displayBuildsForItem(item);
             });
+        }
+
+    }
+
+    /**
+     * Custom {@link TableCell} implementation for the 'IsCubed' column.
+     */
+    public class IsCubedTableCell extends TableCell<BuildInfo, Boolean> {
+
+        // ----------------------------------------------
+        //
+        // Protected API
+        //
+        // ----------------------------------------------
+
+        @Override
+        protected void updateItem(Boolean item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+                return;
+            }
+
+            if (item) {
+                setText(null);
+                setGraphic(new ImageView(new Image(MainController.class.getClassLoader()
+                        .getResourceAsStream("icon/tick.png"))));
+            } else {
+                setText("No");
+                setGraphic(null);
+            }
+
+        }
+
+    }
+
+    /**
+     * Custom {@link TableCell} implementation for the 'Name' column.
+     */
+    public class NameTableCell extends TableCell<BuildInfo, BuildInfo> {
+
+        @Override
+        protected void updateItem(BuildInfo item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty || item == null) {
+                setText(null);
+                setGraphic(null);
+                return;
+            }
+
+            if (item.isFavorite()) {
+                setText(item.getBuildName());
+                ImageView icon = new ImageView(new Image(MainController.class
+                        .getClassLoader().getResourceAsStream("icon/star.png")));
+                AnchorPane iconHolder = new AnchorPane(icon);
+                AnchorPane.setLeftAnchor(icon, 3.0);
+
+                setGraphic(iconHolder);
+            } else {
+                setText(" " + item.getBuildName());
+                setGraphic(null);
+            }
         }
 
     }

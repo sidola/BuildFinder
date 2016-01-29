@@ -30,3 +30,8 @@
     -fx-background-color: rgba(0.0, 150.0, 201.0, 1.0);
     -fx-text-fill: white;
 }
+
+/* Context menu */
+.context-menu {
+    -fx-padding: 0.255em 0.255em 0.255em 0.255em;
+}

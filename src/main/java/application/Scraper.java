@@ -76,20 +76,38 @@ public final class Scraper extends Task<Boolean> {
     //
     // ----------------------------------------------
 
+    /**
+     * Creates a new instance around the given {@link BuildInfo} set.
+     * 
+     * @param buildInfoSet
+     *            The set of {@link BuildInfo}s to fill with scraped data.
+     */
     public Scraper(Set<BuildInfo> buildInfoSet) {
         this.buildInfoSet = buildInfoSet;
     }
 
     // ----------------------------------------------
     //
-    // Public API
+    // Protected API
+    //
+    // ----------------------------------------------
+
+    @Override
+    protected Boolean call() throws Exception {
+        fetchNewBuilds();
+        return true;
+    }
+
+    // ----------------------------------------------
+    //
+    // Private API
     //
     // ----------------------------------------------
 
     /**
      * Extracts all the build-data from the given URL.
      */
-    public Set<BuildInfo> getBuilds(String url) {
+    private Set<BuildInfo> getBuilds(String url) {
         Set<BuildInfo> buildSet = new HashSet<>();
 
         Document document = getDocument(url);
@@ -115,7 +133,7 @@ public final class Scraper extends Task<Boolean> {
     /**
      * Fetches new builds and replaces all currently stored builds.
      */
-    public void fetchNewBuilds() {
+    private void fetchNewBuilds() {
         Set<BuildInfo> builds = new HashSet<BuildInfo>();
 
         for (D3Class thisClass : D3Class.values()) {
@@ -152,32 +170,14 @@ public final class Scraper extends Task<Boolean> {
 
         // Only overwrite the stored builds if we finished normally
         if (!isCancelled()) {
+            Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
+
             buildInfoSet.clear();
             buildInfoSet.addAll(builds);
+            buildInfoSet.removeAll(favoriteBuilds);
+            buildInfoSet.addAll(favoriteBuilds);
         }
     }
-
-    // ----------------------------------------------
-    //
-    // Protected API
-    //
-    // ----------------------------------------------
-
-    @Override
-    protected Boolean call() throws Exception {
-        if (configuration == null) {
-            return false;
-        }
-
-        fetchNewBuilds();
-        return true;
-    }
-
-    // ----------------------------------------------
-    //
-    // Private API
-    //
-    // ----------------------------------------------
 
     /**
      * Fetches a {@link Document} instance from the given URL.
@@ -185,7 +185,7 @@ public final class Scraper extends Task<Boolean> {
      * @throws IllegalStateException
      *             If the {@link Document} couldn't be fetched.
      */
-    private static Document getDocument(String stringUrl) {
+    private Document getDocument(String stringUrl) {
 
         try {
 
@@ -213,7 +213,7 @@ public final class Scraper extends Task<Boolean> {
      * and its URL.
      * </p>
      */
-    private static Set<BuildInfo> extractBuildInfo(Document document) {
+    private Set<BuildInfo> extractBuildInfo(Document document) {
         Set<BuildInfo> builds = new HashSet<>();
 
         Elements table = document.select(".listing-builds tbody tr");
@@ -256,7 +256,7 @@ public final class Scraper extends Task<Boolean> {
      * @throws IllegalStateException
      *             If the given {@link BuildInfo} instance doesn't have a URL.
      */
-    private static void processBuildInfo(BuildInfo buildInfo) {
+    private void processBuildInfo(BuildInfo buildInfo) {
         if (buildInfo.getBuildUrl().toString().isEmpty()) {
             throw new IllegalStateException("The given BuildInfo does not have a URL.");
         }
@@ -308,7 +308,7 @@ public final class Scraper extends Task<Boolean> {
      * 
      * @return Returns a {@link Set} of items found in that slot.
      */
-    private static Set<String> extractItems(Document document, String itemSlot) {
+    private Set<String> extractItems(Document document, String itemSlot) {
         Elements headElements = document.select("#item-" + itemSlot + ">ul>li");
 
         return headElements.stream()
@@ -320,7 +320,7 @@ public final class Scraper extends Task<Boolean> {
     /**
      * Performs any necessary processing on the text extracted from an element.
      */
-    private static String getRawText(Elements elements) {
+    private String getRawText(Elements elements) {
         return elements.text().replaceAll("’", "'");
     }
 

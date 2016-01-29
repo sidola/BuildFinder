@@ -14,6 +14,7 @@ import javafx.application.HostServices;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -46,6 +47,7 @@ public class BuildFinder extends Application {
 
     private static AppConfig appConfig;
     public HostServices hostServices;
+    private Stage primaryStage;
     private MainController mainController = new MainController(this);
 
     // ----------------------------------------------
@@ -67,6 +69,8 @@ public class BuildFinder extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+
         // Set language
         Locale.setDefault(Locale.ENGLISH);
 
@@ -75,7 +79,7 @@ public class BuildFinder extends Application {
         hostServices = getHostServices();
 
         // Setup status bar
-        statusBar.setText(" " + BuildDataManager.getDataInfo());
+        updateStatusBarText();
         statusBar.setMaxHeight(15);
         statusBar.getRightItems().add(statusBarProgressBar);
         statusBarProgressBar.hide();
@@ -110,6 +114,11 @@ public class BuildFinder extends Application {
                 .getResourceAsStream("icon/app_icon.png")));
 
         primaryStage.setScene(scene);
+
+        primaryStage.setWidth(900);
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(350);
+
         primaryStage.show();
 
         // Load config
@@ -130,9 +139,29 @@ public class BuildFinder extends Application {
 
     // ----------------------------------------------
     //
+    // Public API
+    //
+    // ----------------------------------------------
+
+    /**
+     * Updates the status bar text.
+     */
+    public void updateStatusBarText() {
+        statusBar.setText(" " + BuildDataManager.getDataInfo());
+    }
+
+    // ----------------------------------------------
+    //
     // Getters & Setters
     //
     // ----------------------------------------------
+
+    /**
+     * Returns the primary {@link Stage}.
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
 
     /**
      * Returns the {@link StatusBar}.

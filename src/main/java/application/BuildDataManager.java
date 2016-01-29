@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import application.model.BuildGear;
 import application.model.BuildInfo;
@@ -30,8 +31,8 @@ public final class BuildDataManager {
     // ----------------------------------------------
 
     private final static File buildsData = new File("./data/", "builds.data");
-    public static Set<BuildInfo> buildInfoSet = new HashSet<>();
-    public static LocalDate lastUpdated;
+    private static Set<BuildInfo> buildInfoSet = new HashSet<>();
+    private static LocalDate lastUpdated;
 
     // ----------------------------------------------
     //
@@ -230,6 +231,29 @@ public final class BuildDataManager {
      */
     public static void updateLastUpdatedDate() {
         lastUpdated = LocalDate.now();
+    }
+
+    /**
+     * Deletes a specific builds from storage.
+     * 
+     * @throws IllegalArgumentException
+     *             If the given build isn't stored.
+     */
+    public static void deleteBuild(BuildInfo build) {
+        if (!buildInfoSet.contains(build)) {
+            throw new IllegalArgumentException(
+                    "The given build is not stored and cannot be deleted.");
+        }
+
+        buildInfoSet.remove(build);
+    }
+
+    /**
+     * Returns all builds marked as favorites.
+     */
+    public static Set<BuildInfo> getFavoriteBuilds() {
+        return buildInfoSet.stream().filter(buildInfo -> buildInfo.isFavorite())
+                .collect(Collectors.toSet());
     }
 
     // ----------------------------------------------

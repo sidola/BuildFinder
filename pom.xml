@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.beardy</groupId>
 	<artifactId>BuildFinder</artifactId>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 
     <properties>
         <mainClassName>application.gui.BuildFinder</mainClassName>

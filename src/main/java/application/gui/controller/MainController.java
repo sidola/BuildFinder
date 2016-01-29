@@ -25,6 +25,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
@@ -572,10 +573,21 @@ public final class MainController {
             confirmFetch.setContentText(
                     "This action will overwrite all currently stored builds "
                             + "except for the ones marked as favorites, do you want to continue?");
+            
+            confirmFetch.getButtonTypes().add(new ButtonType("Open fetch url...", ButtonData.LEFT));
 
             Optional<ButtonType> result = confirmFetch.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.CANCEL) {
-                return;
+            if (result.isPresent()) {
+                ButtonType resultType = result.get();
+                
+                if (resultType == ButtonType.CANCEL) {
+                    return;                    
+                }
+                
+                if (resultType.getButtonData() == ButtonData.LEFT) {
+                    mainReference.getHostServices().showDocument(Scraper.getFetchUrl());
+                    return;
+                }
             }
 
             toggleUpdateButton();

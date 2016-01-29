@@ -324,4 +324,17 @@ public final class Scraper extends Task<Boolean> {
         return elements.text().replaceAll("’", "'");
     }
 
+    // ----------------------------------------------
+    //
+    // Getters & Setters
+    //
+    // ----------------------------------------------
+
+    /**
+     * Returns the base-url used to fetch data.
+     */
+    public static String getFetchUrl() {
+        return FETCH_URL;
+    }
+
 }

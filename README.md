@@ -42,7 +42,7 @@ Example config:
 
 ## Screenshot
 
-![Main view](http://i.imgur.com/PZWwteQ.png)
+![Main view](http://i.imgur.com/c0Fvi6G.png)
 
 ## Building
 

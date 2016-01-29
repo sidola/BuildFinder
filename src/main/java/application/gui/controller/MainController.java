@@ -155,8 +155,13 @@ public final class MainController {
         buttonGrid.add(showFavoriteBuildsButton, 0, 0);
         buttonGrid.add(updateBuildsButton, 1, 0);
         
-        buttonGrid.getColumnConstraints().add(new ColumnConstraints(130));
-        buttonGrid.getColumnConstraints().add(new ColumnConstraints(130));
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(50);
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setPercentWidth(50);
+        
+        buttonGrid.getColumnConstraints().add(col1);
+        buttonGrid.getColumnConstraints().add(col2);
 
         rightVBox.getChildren().add(buttonGrid);
 

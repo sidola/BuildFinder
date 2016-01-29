@@ -4,6 +4,10 @@ BuildFinder is an application that helps the user find builds that use a certain
 
 The filter function on the DiabloFans website doesn't take cubed items into account, and it's also much slower than searching locally once you've downloaded a batch of builds to search from.
 
+## Download
+
+You can find the latest working release right here on Github. Check out the [releases page](https://github.com/sidola/BuildFinder/releases)!
+
 ## Usage
 
 To use it, simply download it and run the `BuildFinder.jar` file. On first run, you need to press the `Update builds` button and wait for the builds to be downloaded. Once that is done, you simply select an item in the list and it'll show you if there are any builds for it.

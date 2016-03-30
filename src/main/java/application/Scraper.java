@@ -235,13 +235,25 @@ public final class Scraper extends Task<Boolean> {
             if (score < 0) {
                 continue;
             }
-
-            Elements buildClassElements = trElement.getElementsByClass("col-class");
+            
+            Elements classElements = trElement.getElementsByClass("tip");
+            Set<String> classNames = classElements.get(0).classNames();
+            
+            D3Class d3Class = null;
+            for (String className : classNames) {
+                try {
+                    String parsedClassName = className.replaceAll("build-", "").toUpperCase();
+                    parsedClassName = parsedClassName.replaceAll("-", "_");
+                    d3Class = D3Class.valueOf(parsedClassName);
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
+                
+                break;
+            }
+            
             Elements buildUrlElements = trElement.getElementsByClass("d3build");
-
             String urlPart = buildUrlElements.attr("href");
-            D3Class d3Class = D3Class.valueOf(
-                    buildClassElements.text().toUpperCase().replaceAll("\\s", "_"));
 
             builds.add(new BuildInfo(d3Class, BASELINE_URL + urlPart));
         }

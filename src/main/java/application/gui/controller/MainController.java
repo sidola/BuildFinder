@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import application.BuildDataManager;
 import application.Scraper;
 import application.gui.BuildFinder;
+import application.gui.component.ExceptionDialog;
 import application.gui.component.StatusBarProgressBar;
 import application.model.BuildInfo;
 import javafx.application.Platform;
@@ -612,6 +613,17 @@ public final class MainController {
 
                 toggleUpdateButton();
                 button.setUserData(null);
+            });
+
+            scraper.setOnFailed(f -> {
+                ExceptionDialog exceptionDialog = new ExceptionDialog(AlertType.ERROR,
+                        "Something broke when parsing the html data. "
+                                + "See more details for more information.",
+                        (Exception) f.getSource().getException());
+
+                exceptionDialog.initOwner(mainReference.getPrimaryStage());
+                exceptionDialog.showAndWait();
+                System.exit(0);
             });
 
         }

@@ -4,7 +4,7 @@ BuildFinder is an application that helps the user find builds that use a certain
 
 The filter function on the DiabloFans website doesn't take cubed items into account, and it's also much slower than searching locally once you've downloaded a batch of builds to search from.
 
-![Main view](http://i.imgur.com/c0Fvi6G.png)
+![Main view](http://i.imgur.com/oJRrpIG.png)
 
 ## Download
 
@@ -12,39 +12,11 @@ You can find the latest working release right here on Github. Check out the [rel
 
 ## Usage
 
-To use it, simply download it and run the `BuildFinder.jar` file. On first run, you need to press the `Update builds` button and wait for the builds to be downloaded. Once that is done, you simply select an item in the list and it'll show you if there are any builds for it.
+To use the applicaiton, first make sure you're running the [latest version of Java](https://java.com/en/download/). Then double-click the `BuildFinder.jar` to run the application.
 
-### Configure what builds to get
+On first boot you will be asked to go to [diablofans](http://www.diablofans.com/builds) and setup the filters you want to use to fetch builds. Then copy that URL and paste it in to the application. After that, press the `Update builds` button and wait for the builds to be downloaded.
 
-In the `data` folder, there is a file called `config.json`. This file defines what builds the program should download. Below are the valid settings for each option.
-
-
-| *buildType*         	| *buildPatch*  	| *dateRange*  	| *filterType* 	| *pages* 	| *classes* (array) 	|
-|---------------------	|---------------	|--------------	|--------------	|---------	|-------------------	|
-| 0 - All             	| 0 - All       	| 1 - Hot      	| -viewcount   	| 1 to 3  	| 2 - Barbarian     	|
-| 1 - Regular         	| 6 - Patch 2.4 	| 2 - New      	| -rating      	|         	| 4 - Demon hunter  	|
-| 2 - Season          	| 5 - Patch 2.3 	| 3 - Week     	|              	|         	| 8 - Witch doctor  	|
-| 3 - Hardcore        	|               	| 4 - Month    	|              	|         	| 16 - Monk         	|
-| 4 - Hardcore season 	|               	| 5 - All time 	|              	|         	| 32 - Wizard       	|
-|                     	|               	|              	|              	|         	| 64 - Crusader     	|
-
-**Note**: Make sure you make all values are strings, meaning you put them in quotation marks. Like `"this"`, and not like `this`. Otherwise the config won't load. Also make sure all your commas are in place. Use a [JSON validator](http://jsonlint.com/) if you're unsure.
-
-Example config:
-
-```Json
-{
-  "buildType": "0",
-  "buildPatch": "0",
-  "dateRange": "4",
-  "filterType": "-rating",
-  "pages": "1",
-  "classes": [
-    "2",
-    "4"
-  ]
-}
-```
+Once that is done, you can now select an item in the list and the application will show you if there are any builds for that item.
 
 ## Building
 

@@ -14,18 +14,17 @@ import javafx.stage.StageStyle;
  */
 public class ExceptionDialog extends Alert {
 
-    public ExceptionDialog(AlertType alertType, String message, Exception exception) {
+    public ExceptionDialog(AlertType alertType, String message, Throwable throwable) {
         super(alertType);
 
         this.setTitle("An exception occured!");
         this.setHeaderText(null);
         this.setContentText(message);
-        this.initStyle(StageStyle.UTILITY);
 
         // Create expandable Exception.
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        exception.printStackTrace(pw);
+        throwable.printStackTrace(pw);
         String exceptionText = sw.toString();
 
         TextArea textArea = new TextArea(exceptionText);
@@ -43,6 +42,7 @@ public class ExceptionDialog extends Alert {
 
         // Set expandable Exception into the dialog pane.
         this.getDialogPane().setExpandableContent(expContent);
+        this.getDialogPane().setExpanded(true);
     }
 
 }

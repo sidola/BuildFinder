@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,11 +15,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import application.config.AppConfig;
-import application.gui.BuildFinder;
+import application.config.UserPreferences;
+import application.config.UserPreferences.PrefKey;
 import application.model.BuildGear;
 import application.model.BuildInfo;
 import application.model.D3Class;
+import application.util.BuildUrlParser;
+import application.util.MathUtil;
 import javafx.concurrent.Task;
 
 /**
@@ -41,8 +45,11 @@ public final class Scraper extends Task<Boolean> {
     private Set<BuildInfo> buildInfoSet;
 
     private final static String BASELINE_URL = "http://www.diablofans.com";
-    private final static AppConfig configuration;
-    private final static String FETCH_URL;
+//    private final static AppConfig_ configuration;
+//    private final static String FETCH_URL;
+
+    private final String FETCH_URL_;
+    private final Set<Integer> classesToFetch = new HashSet<>();
 
     // ----------------------------------------------
     //
@@ -51,23 +58,23 @@ public final class Scraper extends Task<Boolean> {
     // ----------------------------------------------
 
     static {
-        configuration = BuildFinder.getAppConfig();
-
-        StringBuilder fetchUrlBuilder = new StringBuilder();
-        fetchUrlBuilder.append("http://www.diablofans.com/builds?");
-
-        if (!configuration.getBuildType().equals("0")) {
-            fetchUrlBuilder.append("filter-build-type=" + configuration.getBuildType());
-        }
-
-        if (!configuration.getBuildPatch().equals("0")) {
-            fetchUrlBuilder.append("&filter-build=" + configuration.getBuildPatch());
-        }
-
-        fetchUrlBuilder.append("&filter-build-tag=" + configuration.getDateRange());
-        fetchUrlBuilder.append("&sort=" + configuration.getFilterType());
-
-        FETCH_URL = fetchUrlBuilder.toString();
+//        configuration = BuildFinder.getAppConfig();
+//
+//        StringBuilder fetchUrlBuilder = new StringBuilder();
+//        fetchUrlBuilder.append("http://www.diablofans.com/builds?");
+//
+//        if (!configuration.getBuildType().equals("0")) {
+//            fetchUrlBuilder.append("filter-build-type=" + configuration.getBuildType());
+//        }
+//
+//        if (!configuration.getBuildPatch().equals("0")) {
+//            fetchUrlBuilder.append("&filter-build=" + configuration.getBuildPatch());
+//        }
+//
+//        fetchUrlBuilder.append("&filter-build-tag=" + configuration.getDateRange());
+//        fetchUrlBuilder.append("&sort=" + configuration.getFilterType());
+//
+//        FETCH_URL = fetchUrlBuilder.toString();
     }
 
     // ----------------------------------------------
@@ -84,6 +91,26 @@ public final class Scraper extends Task<Boolean> {
      */
     public Scraper(Set<BuildInfo> buildInfoSet) {
         this.buildInfoSet = buildInfoSet;
+
+        BuildUrlParser buildUrlParser = new BuildUrlParser(
+                UserPreferences.get(PrefKey.BUILDS_URL));
+        Map<String, String> optionsMap = buildUrlParser.getOptions();
+
+        int[] classIdSet = new int[] { 2, 4, 8, 16, 32, 64 };
+        if (optionsMap.containsKey("filter-class")) {
+
+            int classSum = Integer.parseInt(optionsMap.get("filter-class"));
+            classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, classIdSet));
+
+        } else {
+
+            // We'll get all classes if no class was specified by the user
+            classesToFetch.addAll(
+                    Arrays.stream(classIdSet).boxed().collect(Collectors.toList()));
+
+        }
+
+        FETCH_URL_ = buildUrlParser.getFetchUrlWithoutClasses();
     }
 
     // ----------------------------------------------
@@ -142,24 +169,30 @@ public final class Scraper extends Task<Boolean> {
             }
 
             // Skip any classes that aren't found in the config
-            if (!configuration.getClasses().contains(thisClass)) {
+            // if (!configuration.getClasses().contains(thisClass)) {
+            // continue;
+            // }
+
+            if (!classesToFetch.contains(thisClass.getClassFilterId())) {
                 continue;
             }
 
             updateProgress(0, 1);
             int id = thisClass.getClassFilterId();
 
-            String currentFetchUrl = FETCH_URL;
+            String currentFetchUrl = FETCH_URL_;
             currentFetchUrl += "&filter-class=" + id;
 
-            if (configuration.getPages() == 1) {
+            int pageCount = UserPreferences.getInteger(PrefKey.PAGE_COUNT);
+
+            if (pageCount == 1) {
                 updateMessage("Fetching " + thisClass.toString() + " builds");
                 builds.addAll(getBuilds(currentFetchUrl));
             } else {
                 currentFetchUrl += "&page=";
-                for (int i = 1; i <= configuration.getPages(); i++) {
+                for (int i = 1; i <= pageCount; i++) {
                     String statusMessage = "Fetching " + thisClass.toString()
-                            + " builds, page " + i + " of " + configuration.getPages();
+                            + " builds, page " + i + " of " + pageCount;
                     updateMessage(statusMessage);
 
                     builds.addAll(getBuilds(currentFetchUrl + i));
@@ -235,23 +268,24 @@ public final class Scraper extends Task<Boolean> {
             if (score < 0) {
                 continue;
             }
-            
+
             Elements classElements = trElement.getElementsByClass("tip");
             Set<String> classNames = classElements.get(0).classNames();
-            
+
             D3Class d3Class = null;
             for (String className : classNames) {
                 try {
-                    String parsedClassName = className.replaceAll("build-", "").toUpperCase();
+                    String parsedClassName = className.replaceAll("build-", "")
+                            .toUpperCase();
                     parsedClassName = parsedClassName.replaceAll("-", "_");
                     d3Class = D3Class.valueOf(parsedClassName);
                 } catch (IllegalArgumentException e) {
                     continue;
                 }
-                
+
                 break;
             }
-            
+
             Elements buildUrlElements = trElement.getElementsByClass("d3build");
             String urlPart = buildUrlElements.attr("href");
 
@@ -346,7 +380,8 @@ public final class Scraper extends Task<Boolean> {
      * Returns the base-url used to fetch data.
      */
     public static String getFetchUrl() {
-        return FETCH_URL;
+//        return FETCH_URL;
+        return "";
     }
 
 }

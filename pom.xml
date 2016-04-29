@@ -3,9 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.beardy</groupId>
 	<artifactId>BuildFinder</artifactId>
-	<version>1.2.1</version>
+	<version>${project.version}</version>
 
     <properties>
+        <project.version>1.3.0</project.version>
         <mainClassName>application.gui.BuildFinder</mainClassName>
     </properties>
 
@@ -35,6 +36,7 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
 				<includes>
 					<include>**/*.*</include>
 				</includes>

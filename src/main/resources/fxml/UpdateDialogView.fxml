@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.gui.controller.UpdateDialogController">
+   <children>
+      <VBox layoutX="138.0" layoutY="45.0" prefWidth="600.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox spacing="5.0" style="-fx-background-color: #e5e5e5;">
+               <children>
+                  <Label text="Download now?">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+               </padding>
+            </VBox>
+            <TextArea fx:id="changeLogTextArea" editable="false" VBox.vgrow="ALWAYS" />
+            <Separator>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Separator>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <CheckBox fx:id="skipUpdatesCheckBox" mnemonicParsing="false" text="Don't ask again" />
+                  <AnchorPane HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox spacing="15.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Button fx:id="yesButton" defaultButton="true" mnemonicParsing="false" onAction="#onYesButton" prefWidth="100.0" text="Yes" />
+                              <Button fx:id="noButton" mnemonicParsing="false" onAction="#onNoButton" prefWidth="100.0" text="No" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

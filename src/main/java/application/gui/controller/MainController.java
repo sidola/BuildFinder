@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import application.BuildDataManager;
 import application.Scraper;
+import application.config.UserPreferences;
+import application.config.UserPreferences.PrefKey;
 import application.gui.BuildFinder;
 import application.gui.component.ExceptionDialog;
 import application.gui.component.StatusBarProgressBar;
@@ -151,17 +153,17 @@ public final class MainController {
         // Configure update & favorite builds button
         // ---------------------------------
         setupBuildsButtons();
-        
+
         GridPane buttonGrid = new GridPane();
         buttonGrid.setHgap(10);
         buttonGrid.add(showFavoriteBuildsButton, 0, 0);
         buttonGrid.add(updateBuildsButton, 1, 0);
-        
+
         ColumnConstraints col1 = new ColumnConstraints();
         col1.setPercentWidth(50);
         ColumnConstraints col2 = new ColumnConstraints();
         col2.setPercentWidth(50);
-        
+
         buttonGrid.getColumnConstraints().add(col1);
         buttonGrid.getColumnConstraints().add(col2);
 
@@ -299,9 +301,10 @@ public final class MainController {
 
             openBuild.setOnAction(e -> {
                 BuildInfo item = tableRow.getItem();
-                mainReference.getHostServices().showDocument(item.getBuildUrl().toString());                
+                mainReference.getHostServices()
+                        .showDocument(item.getBuildUrl().toString());
             });
-            
+
             toggleFavorite.setOnAction(e -> {
                 BuildInfo item = tableRow.getItem();
                 item.setFavorite(!item.isFavorite());
@@ -492,10 +495,10 @@ public final class MainController {
     private void setupBuildsButtons() {
         showFavoriteBuildsButton.setMaxWidth(Double.MAX_VALUE);
         showFavoriteBuildsButton.setPrefHeight(30);
-        
+
         updateBuildsButton.setMaxWidth(Double.MAX_VALUE);
         updateBuildsButton.setPrefHeight(30);
-        
+
         updateBuildsButton.setOnAction(new FetchBuildsHandler(updateBuildsButton));
         showFavoriteBuildsButton.setOnAction(e -> {
             tableBuildList.clear();
@@ -574,19 +577,12 @@ public final class MainController {
             confirmFetch.setContentText(
                     "This action will overwrite all currently stored builds "
                             + "except for the ones marked as favorites, do you want to continue?");
-            
-            confirmFetch.getButtonTypes().add(new ButtonType("Open fetch url...", ButtonData.LEFT));
 
             Optional<ButtonType> result = confirmFetch.showAndWait();
             if (result.isPresent()) {
                 ButtonType resultType = result.get();
-                
+
                 if (resultType == ButtonType.CANCEL) {
-                    return;                    
-                }
-                
-                if (resultType.getButtonData() == ButtonData.LEFT) {
-                    mainReference.getHostServices().showDocument(Scraper.getFetchUrl());
                     return;
                 }
             }

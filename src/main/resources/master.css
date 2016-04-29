@@ -35,3 +35,7 @@
 .context-menu {
     -fx-padding: 0.255em 0.255em 0.255em 0.255em;
 }
+
+.context-menu .separator {
+    -fx-padding: 0.255em 0em;
+}

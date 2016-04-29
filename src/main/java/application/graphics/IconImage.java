@@ -25,7 +25,7 @@ public enum IconImage {
 
     private IconImage(String iconName) {
         image = new Image(IconImage.class
-                .getResourceAsStream(String.format("../../icon/%s.png", iconName)));
+                .getResourceAsStream(String.format("/icon/%s.png", iconName)));
     }
 
     public Image getImage() {

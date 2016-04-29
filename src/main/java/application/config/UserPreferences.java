@@ -27,8 +27,8 @@ public class UserPreferences {
         try {
             if (!PREFERENCES_FILE.exists()) {
 
-                PREFERENCES.load(UserPreferences.class
-                        .getResourceAsStream("../../user.preferences"));
+                PREFERENCES.load(
+                        UserPreferences.class.getResourceAsStream("/user.preferences"));
                 PREFERENCES.store(new FileWriter(PREFERENCES_FILE), null);
 
             } else {

@@ -26,12 +26,7 @@ import javafx.concurrent.Task;
 
 /**
  * Takes care of scraping HTML information and extracting the relevant data.
- * 
- * <p>
- * <b>Note:</b> Has a static block that loads the configuration file for how
- * scraping should be performed.
- * </p>
- * 
+ *  
  * @author Sid Botvin
  */
 public final class Scraper extends Task<Boolean> {
@@ -45,37 +40,9 @@ public final class Scraper extends Task<Boolean> {
     private Set<BuildInfo> buildInfoSet;
 
     private final static String BASELINE_URL = "http://www.diablofans.com";
-//    private final static AppConfig_ configuration;
-//    private final static String FETCH_URL;
 
     private final String FETCH_URL_;
     private final Set<Integer> classesToFetch = new HashSet<>();
-
-    // ----------------------------------------------
-    //
-    // Static block
-    //
-    // ----------------------------------------------
-
-    static {
-//        configuration = BuildFinder.getAppConfig();
-//
-//        StringBuilder fetchUrlBuilder = new StringBuilder();
-//        fetchUrlBuilder.append("http://www.diablofans.com/builds?");
-//
-//        if (!configuration.getBuildType().equals("0")) {
-//            fetchUrlBuilder.append("filter-build-type=" + configuration.getBuildType());
-//        }
-//
-//        if (!configuration.getBuildPatch().equals("0")) {
-//            fetchUrlBuilder.append("&filter-build=" + configuration.getBuildPatch());
-//        }
-//
-//        fetchUrlBuilder.append("&filter-build-tag=" + configuration.getDateRange());
-//        fetchUrlBuilder.append("&sort=" + configuration.getFilterType());
-//
-//        FETCH_URL = fetchUrlBuilder.toString();
-    }
 
     // ----------------------------------------------
     //
@@ -167,11 +134,6 @@ public final class Scraper extends Task<Boolean> {
             if (isCancelled()) {
                 break;
             }
-
-            // Skip any classes that aren't found in the config
-            // if (!configuration.getClasses().contains(thisClass)) {
-            // continue;
-            // }
 
             if (!classesToFetch.contains(thisClass.getClassFilterId())) {
                 continue;

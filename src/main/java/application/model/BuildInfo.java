@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -29,6 +30,9 @@ public class BuildInfo implements Serializable {
     private transient BooleanProperty isFavoriteProperty = new SimpleBooleanProperty();
     private transient int buildUrlId;
 
+    // Epoch time of when this build was last updated
+    private transient long buildLastUpdated;
+
     private BuildGear buildGear;
 
     // ----------------------------------------------
@@ -37,7 +41,7 @@ public class BuildInfo implements Serializable {
     //
     // ----------------------------------------------
 
-    public BuildInfo(D3Class d3Class, String urlString) {
+    public BuildInfo(D3Class d3Class, String urlString, long buildLastUpdated) {
         this.d3Class = d3Class;
 
         try {
@@ -47,6 +51,7 @@ public class BuildInfo implements Serializable {
         }
 
         this.buildUrlId = extractBuildId(buildUrl);
+        this.buildLastUpdated = buildLastUpdated;
     }
 
     public BuildInfo(D3Class d3Class, URL buildUrl) {
@@ -105,25 +110,25 @@ public class BuildInfo implements Serializable {
         if (this == obj) {
             return true;
         }
-        
+
         if (obj == null) {
             return false;
         }
-        
+
         if (!(obj instanceof BuildInfo)) {
             return false;
         }
-        
+
         BuildInfo other = (BuildInfo) obj;
-        
+
         if (buildUrlId != other.buildUrlId) {
             return false;
         }
-        
+
         if (d3Class != other.d3Class) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -138,6 +143,7 @@ public class BuildInfo implements Serializable {
 
         s.writeBoolean(isFavoriteProperty.get());
         s.writeInt(buildUrlId);
+        s.writeLong(buildLastUpdated);
     }
 
     private void readObject(ObjectInputStream s)
@@ -146,17 +152,19 @@ public class BuildInfo implements Serializable {
 
         isFavoriteProperty = new SimpleBooleanProperty();
         try {
-
             isFavoriteProperty.setValue(s.readBoolean());
             buildUrlId = s.readInt();
-
         } catch (EOFException e) {
-            
             // Could not find fields in the file we loaded
             buildUrlId = extractBuildId(buildUrl);
-            
         }
 
+        try {
+            buildLastUpdated = s.readLong();
+        } catch (EOFException e) {
+            // No last update date was found, this was an old config
+            // We'll just ignore it, it'll fix itself on next update
+        }
     }
 
     // ----------------------------------------------
@@ -215,6 +223,10 @@ public class BuildInfo implements Serializable {
 
     public BooleanProperty isFavoriteProperty() {
         return isFavoriteProperty;
+    }
+
+    public long getBuildLastUpdated() {
+        return buildLastUpdated;
     }
 
 }

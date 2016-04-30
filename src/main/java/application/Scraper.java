@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +28,7 @@ import javafx.concurrent.Task;
 
 /**
  * Takes care of scraping HTML information and extracting the relevant data.
- *  
+ * 
  * @author Sid Botvin
  */
 public final class Scraper extends Task<Boolean> {
@@ -41,7 +43,7 @@ public final class Scraper extends Task<Boolean> {
 
     private final static String BASELINE_URL = "http://www.diablofans.com";
 
-    private final String FETCH_URL_;
+    private final String fetchUrl;
     private final Set<Integer> classesToFetch = new HashSet<>();
 
     // ----------------------------------------------
@@ -77,7 +79,7 @@ public final class Scraper extends Task<Boolean> {
 
         }
 
-        FETCH_URL_ = buildUrlParser.getFetchUrlWithoutClasses();
+        fetchUrl = buildUrlParser.getFetchUrlWithoutClasses();
     }
 
     // ----------------------------------------------
@@ -106,22 +108,75 @@ public final class Scraper extends Task<Boolean> {
 
         Document document = getDocument(url);
         buildSet.addAll(extractBuildInfo(document));
+        Set<BuildInfo> cachedBuilds = extractUpToDateBuilds(buildSet);
+
+        if (buildSet.isEmpty()) {
+            updateProgress(1, 1);
+            showStatusBarMessage("All builds are up to date!", 500);
+
+            buildSet.addAll(cachedBuilds);
+            return buildSet;
+        }
+
+        BuildDownloader buildDownloader = new BuildDownloader(7, buildSet.size());
+        for (BuildInfo buildInfo : buildSet) {
+            buildDownloader.queueWork(buildInfo);
+        }
 
         long workDone = 1;
         updateProgress(workDone, buildSet.size());
-        for (BuildInfo buildInfo : buildSet) {
+
+        while (buildDownloader.hasWork()) {
             if (isCancelled()) {
+                buildDownloader.cancelWork();
                 break;
             }
 
             updateMessage("Downloading build " + workDone + " of " + buildSet.size());
-            processBuildInfo(buildInfo);
+
+            Entry<BuildInfo, Document> buildInfoResult = buildDownloader.getResult();
+            processBuildInfo(buildInfoResult.getKey(), buildInfoResult.getValue());
 
             updateProgress(workDone, buildSet.size());
             workDone++;
         }
 
+        buildSet.addAll(cachedBuilds);
         return buildSet;
+    }
+
+    /**
+     * Takes a set of newly created {@link BuildInfo} instances and takes out
+     * any that are already downloaded and up to date. Then returns a new set of
+     * the items that were taken out.
+     * 
+     * @param buildSet
+     *            The {@link BuildInfo} set to check for already stored builds.
+     * 
+     * @return A new {@link Set} containing any {@link BuildInfo} that were
+     *         already stored locally.
+     */
+    private Set<BuildInfo> extractUpToDateBuilds(Set<BuildInfo> buildSet) {
+        Set<BuildInfo> cachedBuilds = new HashSet<>();
+
+        Iterator<BuildInfo> newInfoIterator = buildSet.iterator();
+        while (newInfoIterator.hasNext()) {
+            BuildInfo newBuildInfo = newInfoIterator.next();
+
+            Iterator<BuildInfo> oldInfoIterator = buildInfoSet.iterator();
+            while (oldInfoIterator.hasNext()) {
+                BuildInfo oldBuildInfo = oldInfoIterator.next();
+
+                if (newBuildInfo.equals(oldBuildInfo) && newBuildInfo
+                        .getBuildLastUpdated() == oldBuildInfo.getBuildLastUpdated()) {
+                    cachedBuilds.add(oldBuildInfo);
+                    newInfoIterator.remove();
+                }
+
+            }
+        }
+
+        return cachedBuilds;
     }
 
     /**
@@ -142,7 +197,7 @@ public final class Scraper extends Task<Boolean> {
             updateProgress(0, 1);
             int id = thisClass.getClassFilterId();
 
-            String currentFetchUrl = FETCH_URL_;
+            String currentFetchUrl = fetchUrl;
             currentFetchUrl += "&filter-class=" + id;
 
             int pageCount = UserPreferences.getInteger(PrefKey.PAGE_COUNT);
@@ -165,13 +220,24 @@ public final class Scraper extends Task<Boolean> {
 
         // Only overwrite the stored builds if we finished normally
         if (!isCancelled()) {
-            Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
-
-            buildInfoSet.clear();
-            buildInfoSet.addAll(builds);
-            buildInfoSet.removeAll(favoriteBuilds);
-            buildInfoSet.addAll(favoriteBuilds);
+            updateStoredBuildInfo(builds);
         }
+    }
+
+    /**
+     * Updates the local storage of {@link BuildInfo} instances to the new ones
+     * that were just downloaded.
+     */
+    private void updateStoredBuildInfo(Set<BuildInfo> newBuildInfoSet) {
+        Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
+
+        buildInfoSet.clear();
+        buildInfoSet.addAll(newBuildInfoSet);
+        buildInfoSet.removeAll(favoriteBuilds);
+        buildInfoSet.addAll(favoriteBuilds);
+
+        updateProgress(1, 1);
+        showStatusBarMessage("Done!", 500);
     }
 
     /**
@@ -251,7 +317,10 @@ public final class Scraper extends Task<Boolean> {
             Elements buildUrlElements = trElement.getElementsByClass("d3build");
             String urlPart = buildUrlElements.attr("href");
 
-            builds.add(new BuildInfo(d3Class, BASELINE_URL + urlPart));
+            Elements dateTimeElements = trElement.getElementsByClass("standard-datetime");
+            long buildLastUpdated = Long.parseLong(dateTimeElements.attr("data-epoch"));
+
+            builds.add(new BuildInfo(d3Class, BASELINE_URL + urlPart, buildLastUpdated));
         }
 
         return builds;
@@ -261,15 +330,20 @@ public final class Scraper extends Task<Boolean> {
      * Takes a baseline {@link BuildInfo} object and populates it with
      * {@link BuildGear} data.
      * 
+     * @param buildInfo
+     *            The {@link BuildInfo} to populate.
+     * @param document
+     *            All the HTML data for this {@link BuildInfo} instance.
+     * 
      * @throws IllegalStateException
      *             If the given {@link BuildInfo} instance doesn't have a URL.
      */
-    private void processBuildInfo(BuildInfo buildInfo) {
+    private void processBuildInfo(BuildInfo buildInfo, Document document) {
         if (buildInfo.getBuildUrl().toString().isEmpty()) {
             throw new IllegalStateException("The given BuildInfo does not have a URL.");
         }
 
-        Document document = getDocument(buildInfo.getBuildUrl().toString());
+        // Document document = getDocument(buildInfo.getBuildUrl().toString());
 
         String buildName = getRawText(document.select(".build-title"));
 
@@ -332,18 +406,22 @@ public final class Scraper extends Task<Boolean> {
         return elements.text().replaceAll("’", "'");
     }
 
-    // ----------------------------------------------
-    //
-    // Getters & Setters
-    //
-    // ----------------------------------------------
-
     /**
-     * Returns the base-url used to fetch data.
+     * Pauses the current thread and displays a message in the status-bar.
+     * 
+     * @param message
+     *            The message to display.
+     * @param threadPause
+     *            The amount of milliseconds to pause the thread for.
      */
-    public static String getFetchUrl() {
-//        return FETCH_URL;
-        return "";
+    private void showStatusBarMessage(String message, long threadPause) {
+        updateMessage(message);
+
+        try {
+            Thread.sleep(threadPause);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

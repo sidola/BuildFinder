@@ -42,6 +42,7 @@ public final class Scraper extends Task<Boolean> {
     private Set<BuildInfo> buildInfoSet;
 
     private final static String BASELINE_URL = "http://www.diablofans.com";
+    private final static int MAX_PAGE_COUNT = 3;
 
     private final String fetchUrl;
     private final Set<Integer> classesToFetch = new HashSet<>();
@@ -201,6 +202,12 @@ public final class Scraper extends Task<Boolean> {
             currentFetchUrl += "&filter-class=" + id;
 
             int pageCount = UserPreferences.getInteger(PrefKey.PAGE_COUNT);
+
+            // Limit the amount of pages we download
+            if (pageCount > MAX_PAGE_COUNT) {
+                UserPreferences.set(PrefKey.PAGE_COUNT, MAX_PAGE_COUNT);
+                pageCount = MAX_PAGE_COUNT;
+            }
 
             if (pageCount == 1) {
                 updateMessage("Fetching " + thisClass.toString() + " builds");

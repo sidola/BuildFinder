@@ -4,9 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -47,6 +52,10 @@ public final class Scraper extends Task<Boolean> {
     private final String fetchUrl;
     private final Set<Integer> classesToFetch = new HashSet<>();
 
+    private final List<FetchInfo> fetchInfo;
+
+    private Set<BuildInfo> newBuildInfoSet;
+
     // ----------------------------------------------
     //
     // Constructor
@@ -61,6 +70,9 @@ public final class Scraper extends Task<Boolean> {
      */
     public Scraper(Set<BuildInfo> buildInfoSet) {
         this.buildInfoSet = buildInfoSet;
+        fetchInfo = buildFetchInfo();
+
+        // -- Old system below --
 
         BuildUrlParser buildUrlParser = new BuildUrlParser(
                 UserPreferences.get(PrefKey.BUILDS_URL));
@@ -91,7 +103,16 @@ public final class Scraper extends Task<Boolean> {
 
     @Override
     protected Boolean call() throws Exception {
-        fetchNewBuilds();
+        newBuildInfoSet = new HashSet<>();
+
+        for (FetchInfo fetchInfo : fetchInfo) {
+            newBuildInfoSet.addAll(fetchNewBuilds(fetchInfo));
+        }
+
+        if (!isCancelled()) {
+            updateStoredBuildInfo(newBuildInfoSet);
+        }
+
         return true;
     }
 
@@ -102,6 +123,104 @@ public final class Scraper extends Task<Boolean> {
     // ----------------------------------------------
 
     /**
+     * Fetches new builds based on the given {@link FetchInfo}.
+     */
+    private Set<BuildInfo> fetchNewBuilds(FetchInfo fetchInfo) {
+        Set<BuildInfo> builds = new HashSet<>();
+
+        for (D3Class thisClass : D3Class.values()) {
+            if (isCancelled()) {
+                break;
+            }
+
+            int id = thisClass.getClassFilterId();
+            if (!fetchInfo.classesToFetch.contains(id)) {
+                continue;
+            }
+
+            updateProgress(0, 1);
+            String thisFetchUrl = fetchInfo.fetchUrl;
+            thisFetchUrl += "&filter-class=" + id;
+
+            int pageCount = fetchInfo.pageCount;
+
+            if (pageCount == 1) {
+
+                updateMessage(String.format("Fetching %s builds", thisClass.toString()));
+                builds.addAll(getBuilds(thisFetchUrl));
+
+            } else {
+
+                // Note that we're starting at 1
+                for (int i = 1; i < pageCount; i++) {
+
+                    thisFetchUrl += "&page=" + i;
+                    updateMessage(String.format("Fetching %s builds, page %d of %d",
+                            thisClass.toString(), i, pageCount));
+
+                    builds.addAll(getBuilds(thisFetchUrl));
+
+                }
+
+            }
+        }
+
+        return builds;
+    }
+
+    /**
+     * Parses the {@link UserPreferences} and extracts fetch information.
+     */
+    private List<FetchInfo> buildFetchInfo() {
+        List<FetchInfo> returnList = new ArrayList<>();
+
+        BuildUrlParser buildUrlParser = new BuildUrlParser(
+                UserPreferences.get(PrefKey.BUILDS_URL));
+
+        Set<Integer> classesToFetch = buildUrlParser.extractClassesToFetch();
+
+        int pageCount = UserPreferences.getInteger(PrefKey.PAGE_COUNT);
+        // Limit the amount of pages we download
+        if (pageCount > MAX_PAGE_COUNT) {
+            UserPreferences.set(PrefKey.PAGE_COUNT, MAX_PAGE_COUNT);
+            pageCount = MAX_PAGE_COUNT;
+        }
+
+        FetchInfo defaultFetchInfo = new FetchInfo(
+                buildUrlParser.getFetchUrlWithoutClasses(), pageCount, classesToFetch);
+
+        returnList.add(defaultFetchInfo);
+
+        // Now let's process additional URLs
+
+        List<String> additionalFetchUrls = UserPreferences
+                .getList(PrefKey.ADDITIONAL_BUILD_URLS);
+        List<String> additionalPageCounts = UserPreferences
+                .getList(PrefKey.ADDITIONAL_PAGE_COUNTS);
+
+        if (additionalFetchUrls.isEmpty() || additionalPageCounts.isEmpty()) {
+            return returnList;
+        }
+
+        for (int i = 0; i < additionalFetchUrls.size(); i++) {
+            String additionalfetchUrl = additionalFetchUrls.get(i);
+            buildUrlParser = new BuildUrlParser(additionalfetchUrl);
+
+            int additionalPageCount = Integer.parseInt(additionalPageCounts.get(i));
+
+            Set<Integer> additonalClassesToFetch = buildUrlParser.extractClassesToFetch();
+
+            FetchInfo additionalFetchInfo = new FetchInfo(
+                    buildUrlParser.getFetchUrlWithoutClasses(), additionalPageCount,
+                    additonalClassesToFetch);
+
+            returnList.add(additionalFetchInfo);
+        }
+
+        return returnList;
+    }
+
+    /**
      * Extracts all the build-data from the given URL.
      */
     private Set<BuildInfo> getBuilds(String url) {
@@ -109,13 +228,13 @@ public final class Scraper extends Task<Boolean> {
 
         Document document = getDocument(url);
         buildSet.addAll(extractBuildInfo(document));
-        Set<BuildInfo> cachedBuilds = extractUpToDateBuilds(buildSet);
+        Set<BuildInfo> upToDateBuilds = extractUpToDateBuilds(buildSet);
 
         if (buildSet.isEmpty()) {
             updateProgress(1, 1);
             showStatusBarMessage("All builds are up to date!", 500);
 
-            buildSet.addAll(cachedBuilds);
+            buildSet.addAll(upToDateBuilds);
             return buildSet;
         }
 
@@ -142,7 +261,7 @@ public final class Scraper extends Task<Boolean> {
             workDone++;
         }
 
-        buildSet.addAll(cachedBuilds);
+        buildSet.addAll(upToDateBuilds);
         return buildSet;
     }
 
@@ -160,75 +279,45 @@ public final class Scraper extends Task<Boolean> {
     private Set<BuildInfo> extractUpToDateBuilds(Set<BuildInfo> buildSet) {
         Set<BuildInfo> cachedBuilds = new HashSet<>();
 
-        Iterator<BuildInfo> newInfoIterator = buildSet.iterator();
-        while (newInfoIterator.hasNext()) {
-            BuildInfo newBuildInfo = newInfoIterator.next();
+        Iterator<BuildInfo> currentInfoIterator = buildSet.iterator();
+        while (currentInfoIterator.hasNext()) {
+            BuildInfo currentBuildInfo = currentInfoIterator.next();
 
+            boolean buildRemoved = false;
+
+            // Remove any builds we had before we started the fetch
             Iterator<BuildInfo> oldInfoIterator = buildInfoSet.iterator();
             while (oldInfoIterator.hasNext()) {
                 BuildInfo oldBuildInfo = oldInfoIterator.next();
 
-                if (newBuildInfo.equals(oldBuildInfo) && newBuildInfo
+                if (currentBuildInfo.equals(oldBuildInfo) && currentBuildInfo
                         .getBuildLastUpdated() == oldBuildInfo.getBuildLastUpdated()) {
                     cachedBuilds.add(oldBuildInfo);
-                    newInfoIterator.remove();
-                }
+                    currentInfoIterator.remove();
 
+                    buildRemoved = true;
+                    break;
+                }
             }
+
+            // Remove any builds we might've gotten from earlier URLs during
+            // this session, assuming they were removed above
+            Iterator<BuildInfo> newInfoIterator = newBuildInfoSet.iterator();
+            while (!buildRemoved && newInfoIterator.hasNext()) {
+                BuildInfo newBuildInfo = newInfoIterator.next();
+
+                if (currentBuildInfo.equals(newBuildInfo) && currentBuildInfo
+                        .getBuildLastUpdated() == newBuildInfo.getBuildLastUpdated()) {
+
+                    cachedBuilds.add(newBuildInfo);
+                    currentInfoIterator.remove();
+                    break;
+                }
+            }
+
         }
 
         return cachedBuilds;
-    }
-
-    /**
-     * Fetches new builds and replaces all currently stored builds.
-     */
-    private void fetchNewBuilds() {
-        Set<BuildInfo> builds = new HashSet<BuildInfo>();
-
-        for (D3Class thisClass : D3Class.values()) {
-            if (isCancelled()) {
-                break;
-            }
-
-            if (!classesToFetch.contains(thisClass.getClassFilterId())) {
-                continue;
-            }
-
-            updateProgress(0, 1);
-            int id = thisClass.getClassFilterId();
-
-            String currentFetchUrl = fetchUrl;
-            currentFetchUrl += "&filter-class=" + id;
-
-            int pageCount = UserPreferences.getInteger(PrefKey.PAGE_COUNT);
-
-            // Limit the amount of pages we download
-            if (pageCount > MAX_PAGE_COUNT) {
-                UserPreferences.set(PrefKey.PAGE_COUNT, MAX_PAGE_COUNT);
-                pageCount = MAX_PAGE_COUNT;
-            }
-
-            if (pageCount == 1) {
-                updateMessage("Fetching " + thisClass.toString() + " builds");
-                builds.addAll(getBuilds(currentFetchUrl));
-            } else {
-                currentFetchUrl += "&page=";
-                for (int i = 1; i <= pageCount; i++) {
-                    String statusMessage = "Fetching " + thisClass.toString()
-                            + " builds, page " + i + " of " + pageCount;
-                    updateMessage(statusMessage);
-
-                    builds.addAll(getBuilds(currentFetchUrl + i));
-                }
-            }
-
-        }
-
-        // Only overwrite the stored builds if we finished normally
-        if (!isCancelled()) {
-            updateStoredBuildInfo(builds);
-        }
     }
 
     /**
@@ -287,6 +376,10 @@ public final class Scraper extends Task<Boolean> {
         Elements table = document.select(".listing-builds tbody tr");
 
         for (Element trElement : table) {
+
+            if (!trElement.getElementsByClass("no-results").isEmpty()) {
+                return Collections.emptySet();
+            }
 
             // Extract the score first since we might not save this build given
             // a particular score
@@ -429,6 +522,26 @@ public final class Scraper extends Task<Boolean> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    // ----------------------------------------------
+    //
+    // Inner class
+    //
+    // ----------------------------------------------
+
+    private class FetchInfo {
+
+        private String fetchUrl;
+        private int pageCount;
+        private final Set<Integer> classesToFetch = new HashSet<>();
+
+        public FetchInfo(String fetchUrl, int pageCount, Set<Integer> classesToFetch) {
+            this.fetchUrl = fetchUrl;
+            this.pageCount = pageCount;
+            this.classesToFetch.addAll(classesToFetch);
+        }
+
     }
 
 }

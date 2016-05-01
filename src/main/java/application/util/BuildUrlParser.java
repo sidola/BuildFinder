@@ -1,7 +1,13 @@
 package application.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import application.model.D3Class;
 
 /**
  * Util class to help parse a builds URL and extract the options in it.
@@ -55,15 +61,43 @@ public class BuildUrlParser {
     }
 
     /**
+     * Returns a set of unique {@link D3Class} IDs for each class to fetch. If
+     * no classes are specified in the URL, a list of all classes will be
+     * returned.
+     */
+    public Set<Integer> extractClassesToFetch() {
+        Set<Integer> classesToFetch = new HashSet<>();
+        Map<String, String> optionsMap = getOptions();
+
+        int[] classIdSet = new int[] { 2, 4, 8, 16, 32, 64 };
+        if (optionsMap.containsKey("filter-class")) {
+            int classSum = Integer.parseInt(optionsMap.get("filter-class"));
+            classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, classIdSet));
+        } else {
+            // We'll get all classes if no class was specified by the user
+            classesToFetch.addAll(
+                    Arrays.stream(classIdSet).boxed().collect(Collectors.toList()));
+        }
+
+        return classesToFetch;
+    }
+
+    /**
      * Returns parsed URL without the class param.
      * 
      * <p>
      * Using the URL:
-     * <pre>http://www.diablofans.com/builds?filter-has-spell-2=-1&filter-build-tag=3
-     * &filter-class=2</pre> 
+     * 
+     * <pre>
+     * http://www.diablofans.com/builds?filter-has-spell-2=-1&filter-build-tag=3
+     * &filter-class=2
+     * </pre>
      * 
      * Would return:
-     * <pre>http://www.diablofans.com/builds?filter-has-spell-2=-1&filter-build-tag=3</pre>
+     * 
+     * <pre>
+     * http://www.diablofans.com/builds?filter-has-spell-2=-1&filter-build-tag=3
+     * </pre>
      * </p>
      * 
      */

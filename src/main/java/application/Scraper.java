@@ -151,14 +151,17 @@ public final class Scraper extends Task<Boolean> {
 
             } else {
 
-                // Note that we're starting at 1
-                for (int i = 1; i < pageCount; i++) {
+                thisFetchUrl += "&page=";
+                
+                for (int i = 0; i < pageCount; i++) {
 
-                    thisFetchUrl += "&page=" + i;
+                    int currentPage = i + 1;
+                    
+                    updateProgress(0, 1);
                     updateMessage(String.format("Fetching %s builds, page %d of %d",
-                            thisClass.toString(), i, pageCount));
+                            thisClass.toString(), currentPage, pageCount));
 
-                    builds.addAll(getBuilds(thisFetchUrl));
+                    builds.addAll(getBuilds(thisFetchUrl + currentPage));
 
                 }
 

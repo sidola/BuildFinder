@@ -29,7 +29,7 @@
                   <HyperlinkLabel fx:id="diabloBuildsLink" text="1) Go to [diablobuilds.com/builds] and setup the filter you want." />
                   <Label text="2) Copy the URL and paste it here." />
                   <Label text="3) Enter how many pages you want." />
-                  <Label text="Note: Page count is per class. Each class will be fetched individually." wrapText="true">
+                  <Label text="Note: Page count is per class. Each class will be fetched individually. You can also add additional URLs to fetch from in the application preferences." wrapText="true">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>

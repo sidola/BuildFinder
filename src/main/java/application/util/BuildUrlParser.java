@@ -1,11 +1,14 @@
 package application.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.jsoup.helper.StringUtil;
 
 import application.model.D3Class;
 
@@ -22,7 +25,14 @@ public class BuildUrlParser {
     //
     // ----------------------------------------------
 
+    private final static int[] classIdSets = new int[] { 2, 4, 8, 16, 32, 64 };
+
     private final String USER_URL;
+    private final boolean VALID_URL;
+
+    private Map<String, String> optionsMap;
+    private Set<Integer> classesToFetch;
+    private String USER_URL_NO_CLASSES;
 
     // ----------------------------------------------
     //
@@ -35,6 +45,7 @@ public class BuildUrlParser {
      */
     public BuildUrlParser(String url) {
         this.USER_URL = url;
+        VALID_URL = validateUrl(url);
     }
 
     // ----------------------------------------------
@@ -46,40 +57,52 @@ public class BuildUrlParser {
     /**
      * Parses the given URL and extracts the fetch options from it.
      * 
-     * @return A {@link Map} containing the options and their values.
+     * @return An unmodifiable {@link Map} containing the options and their
+     *         values.
      */
     public Map<String, String> getOptions() {
-        String[] optionPairs = USER_URL.split("\\?")[1].split("&");
-
-        Map<String, String> optionsMap = new HashMap<>();
-        for (String thisOption : optionPairs) {
-            String[] keyValuePair = thisOption.split("=");
-            optionsMap.put(keyValuePair[0], keyValuePair[1]);
+        if (!isValidUrl()) {
+            throw new IllegalStateException("The given URL is not valid");
         }
 
-        return optionsMap;
+        if (optionsMap == null) {
+            String[] optionPairs = USER_URL.split("\\?")[1].split("&");
+
+            optionsMap = new HashMap<>();
+            for (String thisOption : optionPairs) {
+                String[] keyValuePair = thisOption.split("=");
+                optionsMap.put(keyValuePair[0], keyValuePair[1]);
+            }
+        }
+
+        return Collections.unmodifiableMap(optionsMap);
     }
 
     /**
-     * Returns a set of unique {@link D3Class} IDs for each class to fetch. If
-     * no classes are specified in the URL, a list of all classes will be
-     * returned.
+     * Returns an unmodifiable set of unique {@link D3Class} IDs for each class
+     * to fetch. If no classes are specified in the URL, a list of all classes
+     * will be returned.
      */
     public Set<Integer> extractClassesToFetch() {
-        Set<Integer> classesToFetch = new HashSet<>();
-        Map<String, String> optionsMap = getOptions();
-
-        int[] classIdSet = new int[] { 2, 4, 8, 16, 32, 64 };
-        if (optionsMap.containsKey("filter-class")) {
-            int classSum = Integer.parseInt(optionsMap.get("filter-class"));
-            classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, classIdSet));
-        } else {
-            // We'll get all classes if no class was specified by the user
-            classesToFetch.addAll(
-                    Arrays.stream(classIdSet).boxed().collect(Collectors.toList()));
+        if (!isValidUrl()) {
+            throw new IllegalStateException("The given URL is not valid");
         }
 
-        return classesToFetch;
+        if (classesToFetch == null) {
+            classesToFetch = new HashSet<>();
+            Map<String, String> optionsMap = getOptions();
+
+            if (optionsMap.containsKey("filter-class")) {
+                int classSum = Integer.parseInt(optionsMap.get("filter-class"));
+                classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, classIdSets));
+            } else {
+                // We'll get all classes if no class was specified by the user
+                classesToFetch.addAll(
+                        Arrays.stream(classIdSets).boxed().collect(Collectors.toList()));
+            }
+        }
+
+        return Collections.unmodifiableSet(classesToFetch);
     }
 
     /**
@@ -102,18 +125,34 @@ public class BuildUrlParser {
      * 
      */
     public String getFetchUrlWithoutClasses() {
-        return USER_URL.replaceAll("&filter-class=\\d+", "");
+        if (!isValidUrl()) {
+            throw new IllegalStateException("The given URL is not valid");
+        }
+
+        if (StringUtil.isBlank(USER_URL_NO_CLASSES)) {
+            USER_URL_NO_CLASSES = USER_URL.replaceAll("&filter-class=\\d+", "");
+        }
+
+        return USER_URL_NO_CLASSES;
     }
+    
+    // ----------------------------------------------
+    //
+    // Private API
+    //
+    // ----------------------------------------------
 
     /**
-     * Checks if the given URL is valid.
+     * Validates the given URL.
+     * 
+     * @return true if the URL is valid, false otherwise.
      */
-    public boolean isValidUrl() {
-        if (!USER_URL.contains("diablofans.com/builds")) {
+    private boolean validateUrl(String url) {
+        if (!url.contains("diablofans.com/builds")) {
             return false;
         }
 
-        String[] urlParts = USER_URL.split("\\?");
+        String[] urlParts = url.split("\\?");
 
         if (urlParts.length < 2) {
             return false;
@@ -122,4 +161,14 @@ public class BuildUrlParser {
         return true;
     }
 
+    // ----------------------------------------------
+    //
+    // Getters
+    //
+    // ----------------------------------------------
+    
+    public boolean isValidUrl() {
+        return VALID_URL;
+    }
+    
 }

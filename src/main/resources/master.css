@@ -39,3 +39,9 @@
 .context-menu .separator {
     -fx-padding: 0.255em 0em;
 }
+
+/* Validation style */
+.error {
+	-fx-background-color: rgba(215.0, 44.0, 44.0, 0.8),
+		-fx-control-inner-background;
+}

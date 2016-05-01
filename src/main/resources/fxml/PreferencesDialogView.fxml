@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.91" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.gui.controller.PreferencesDialogController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.gui.controller.PreferencesDialogController">
    <children>
       <VBox layoutX="138.0" layoutY="45.0" prefWidth="600.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -47,22 +47,26 @@
                   <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                </padding>
             </VBox>
-            <HBox spacing="10.0">
+            <VBox fx:id="urlVBoxWrapper" spacing="15.0">
                <children>
-                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                  <HBox spacing="10.0">
                      <children>
-                        <Label text="Fetch URL" />
-                        <TextField fx:id="fetchUrlField" prefHeight="25.0" prefWidth="322.0" VBox.vgrow="ALWAYS" />
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Fetch URL" />
+                              <TextField fx:id="fetchUrlField" prefHeight="25.0" prefWidth="322.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="Page Count" />
+                              <Spinner fx:id="pageCountSpinner" initialValue="1" max="3" min="1" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-                  <VBox spacing="5.0">
-                     <children>
-                        <Label text="Page Count" />
-                        <Spinner fx:id="pageCountSpinner" initialValue="1" max="3" min="1" />
-                     </children>
-                  </VBox>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
             <Separator>
                <VBox.margin>
                   <Insets />

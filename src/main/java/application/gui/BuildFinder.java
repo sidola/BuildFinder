@@ -284,6 +284,10 @@ public class BuildFinder extends Application {
             controller.updateView();
 
             Scene preferencesScene = new Scene(loader.getRoot());
+            
+            String css = getClass().getResource("/master.css").toExternalForm();
+            preferencesScene.getStylesheets().add(css);
+            
             preferencesDialog.setScene(preferencesScene);
             preferencesDialog.showAndWait();
         } catch (IOException e) {

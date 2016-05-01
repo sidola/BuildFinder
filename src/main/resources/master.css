@@ -41,7 +41,7 @@
 }
 
 /* Validation style */
-.error {
+.validation-style-error {
 	-fx-background-color: rgba(215.0, 44.0, 44.0, 0.8),
 		-fx-control-inner-background;
 }

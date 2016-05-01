@@ -17,7 +17,7 @@ public class ValidationUtils {
     //
     // ----------------------------------------------
 
-    private final static String ERROR_STYLE = "error";
+    private final static String ERROR_STYLE = "validation-style-error";
 
     // ----------------------------------------------
     //

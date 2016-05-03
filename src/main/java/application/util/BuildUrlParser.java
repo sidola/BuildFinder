@@ -70,6 +70,12 @@ public class BuildUrlParser {
 
             optionsMap = new HashMap<>();
             for (String thisOption : optionPairs) {
+                // This can happen if we hit double ampersands with nothing in
+                // between
+                if (StringUtil.isBlank(thisOption)) {
+                    continue;
+                }
+
                 String[] keyValuePair = thisOption.split("=");
                 optionsMap.put(keyValuePair[0], keyValuePair[1]);
             }
@@ -135,7 +141,7 @@ public class BuildUrlParser {
 
         return USER_URL_NO_CLASSES;
     }
-    
+
     // ----------------------------------------------
     //
     // Private API
@@ -166,9 +172,9 @@ public class BuildUrlParser {
     // Getters
     //
     // ----------------------------------------------
-    
+
     public boolean isValidUrl() {
         return VALID_URL;
     }
-    
+
 }

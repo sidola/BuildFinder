@@ -296,11 +296,10 @@ public final class Scraper extends Task<Boolean> {
                 if (currentBuildInfo.equals(oldBuildInfo) && currentBuildInfo
                         .getBuildLastUpdated() == oldBuildInfo.getBuildLastUpdated()) {
 
-                    // If we have a different score we want to update even if
-                    // nothing else changed
+                    // Only update the score for the old build
                     if (currentBuildInfo.getBuildScore() != oldBuildInfo
                             .getBuildScore()) {
-                        continue;
+                        oldBuildInfo.setBuildScore(currentBuildInfo.getBuildScore());
                     }
 
                     cachedBuilds.add(oldBuildInfo);
@@ -340,23 +339,10 @@ public final class Scraper extends Task<Boolean> {
         List<BuildInfo> favoriteBuilds = new ArrayList<>(
                 BuildDataManager.getFavoriteBuilds());
 
-        // We might have updated builds that were marked as favorites, so we'll
-        // have to get new instance of those
-        List<BuildInfo> updatedFavBuilds = new ArrayList<>();
-        for (BuildInfo buildInfo : newBuildInfoSet) {
-            if (favoriteBuilds.contains(buildInfo)) {
-                buildInfo.setFavorite(true);
-                updatedFavBuilds.add(buildInfo);
-            }
-        }
-
         buildInfoSet.clear();
         buildInfoSet.addAll(newBuildInfoSet);
         buildInfoSet.removeAll(favoriteBuilds);
-
-        favoriteBuilds.removeAll(updatedFavBuilds);
         buildInfoSet.addAll(favoriteBuilds);
-        buildInfoSet.addAll(updatedFavBuilds);
 
         updateProgress(1, 1);
         showStatusBarMessage("Done!", 500);
@@ -470,14 +456,7 @@ public final class Scraper extends Task<Boolean> {
             throw new IllegalStateException("The given BuildInfo does not have a URL.");
         }
 
-        // Document document = getDocument(buildInfo.getBuildUrl().toString());
-
         String buildName = getRawText(document.select(".build-title"));
-
-        // Handle 0-score edge-cases
-        String buildScoreString = getRawText(document.select(".rating-sum"));
-        int buildScore = (buildScoreString.length() == 1) ? 0
-                : Integer.parseInt(buildScoreString.substring(1));
 
         String cubeWeapon = getRawText(document.select("#kanai-weapon>span"));
         String cubeArmor = getRawText(document.select("#kanai-armor>span"));
@@ -502,8 +481,6 @@ public final class Scraper extends Task<Boolean> {
         buildGear.offhandSlot.addAll(extractItems(document, "offhand"));
 
         buildInfo.setBuildName(buildName);
-        buildInfo.setBuildScore(buildScore);
-
         buildInfo.setBuildGear(buildGear);
     }
 

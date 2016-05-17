@@ -295,11 +295,20 @@ public final class Scraper extends Task<Boolean> {
 
                 if (currentBuildInfo.equals(oldBuildInfo) && currentBuildInfo
                         .getBuildLastUpdated() == oldBuildInfo.getBuildLastUpdated()) {
+
+                    // If we have a different score we want to update even if
+                    // nothing else changed
+                    if (currentBuildInfo.getBuildScore() != oldBuildInfo
+                            .getBuildScore()) {
+                        continue;
+                    }
+
                     cachedBuilds.add(oldBuildInfo);
                     currentInfoIterator.remove();
 
                     buildRemoved = true;
                     break;
+
                 }
             }
 
@@ -328,12 +337,26 @@ public final class Scraper extends Task<Boolean> {
      * that were just downloaded.
      */
     private void updateStoredBuildInfo(Set<BuildInfo> newBuildInfoSet) {
-        Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
+        List<BuildInfo> favoriteBuilds = new ArrayList<>(
+                BuildDataManager.getFavoriteBuilds());
+
+        // We might have updated builds that were marked as favorites, so we'll
+        // have to get new instance of those
+        List<BuildInfo> updatedFavBuilds = new ArrayList<>();
+        for (BuildInfo buildInfo : newBuildInfoSet) {
+            if (favoriteBuilds.contains(buildInfo)) {
+                buildInfo.setFavorite(true);
+                updatedFavBuilds.add(buildInfo);
+            }
+        }
 
         buildInfoSet.clear();
         buildInfoSet.addAll(newBuildInfoSet);
         buildInfoSet.removeAll(favoriteBuilds);
+
+        favoriteBuilds.removeAll(updatedFavBuilds);
         buildInfoSet.addAll(favoriteBuilds);
+        buildInfoSet.addAll(updatedFavBuilds);
 
         updateProgress(1, 1);
         showStatusBarMessage("Done!", 500);
@@ -423,7 +446,8 @@ public final class Scraper extends Task<Boolean> {
             Elements dateTimeElements = trElement.getElementsByClass("standard-datetime");
             long buildLastUpdated = Long.parseLong(dateTimeElements.attr("data-epoch"));
 
-            builds.add(new BuildInfo(d3Class, BASELINE_URL + urlPart, buildLastUpdated));
+            builds.add(new BuildInfo(d3Class, BASELINE_URL + urlPart, buildLastUpdated,
+                    score));
         }
 
         return builds;

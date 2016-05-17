@@ -41,8 +41,9 @@ public class BuildInfo implements Serializable {
     //
     // ----------------------------------------------
 
-    public BuildInfo(D3Class d3Class, String urlString, long buildLastUpdated) {
+    public BuildInfo(D3Class d3Class, String urlString, long buildLastUpdated, int score) {
         this.d3Class = d3Class;
+        this.buildScore = score;
 
         try {
             this.buildUrl = new URL(urlString);

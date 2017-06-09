@@ -54,29 +54,24 @@ public final class BuildDataManager {
      */
     public static String getDataInfo() {
         StringBuilder stringBuilder = new StringBuilder();
+        String delimiter = "|";
 
-        // @formatter:off
-        stringBuilder.append("M: " + buildInfoSet.stream()
-            .filter(b -> b.getD3Class() == D3Class.MONK).count() + " | ");
-        
-        stringBuilder.append("W: " + buildInfoSet.stream()
-            .filter(b -> b.getD3Class() == D3Class.WIZARD).count() + " | ");
-        
-        stringBuilder.append("C: " + buildInfoSet.stream()
-            .filter(b -> b.getD3Class() == D3Class.CRUSADER).count() + " | ");
-        
-        stringBuilder.append("B: " + buildInfoSet.stream()
-            .filter(b -> b.getD3Class() == D3Class.BARBARIAN).count() + " | ");
-        
-        stringBuilder.append("WD: " + buildInfoSet.stream()
-            .filter(b -> b.getD3Class() == D3Class.WITCH_DOCTOR).count() + " | ");
-        
-        stringBuilder.append("DH: " + buildInfoSet.stream()
-            .filter(b -> b.getD3Class() == D3Class.DEMON_HUNTER).count());
-        // @formatter:on
+        for (D3Class d3Class : D3Class.values()) {
+
+            long setCount = buildInfoSet.stream().filter(b -> b.getD3Class() == d3Class)
+                    .count();
+
+            stringBuilder.append(String.format("%s: %d %s ", d3Class.getShorthandName(),
+                    setCount, delimiter));
+
+        }
+
+        // Trim last whitespace and delimiter
+        stringBuilder.setLength(stringBuilder.length() - 2);
 
         String buildsUpdatedDate = (lastUpdated == null) ? "Never"
                 : lastUpdated.toString();
+
         return "Builds updated: " + buildsUpdatedDate + " | " + stringBuilder.toString();
     }
 

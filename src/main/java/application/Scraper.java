@@ -4,15 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.sql.Savepoint;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +24,6 @@ import application.model.BuildGear;
 import application.model.BuildInfo;
 import application.model.D3Class;
 import application.util.BuildUrlParser;
-import application.util.MathUtil;
 import javafx.concurrent.Task;
 
 /**
@@ -49,10 +44,7 @@ public final class Scraper extends Task<Boolean> {
     private final static String BASELINE_URL = "http://www.diablofans.com";
     private final static int MAX_PAGE_COUNT = 3;
 
-    private final String fetchUrl;
-    private final Set<Integer> classesToFetch = new HashSet<>();
-
-    private final List<FetchInfo> fetchInfo;
+    private final List<FetchInfo> FETCH_INFO;
 
     private Set<BuildInfo> newBuildInfoSet;
 
@@ -70,29 +62,7 @@ public final class Scraper extends Task<Boolean> {
      */
     public Scraper(Set<BuildInfo> buildInfoSet) {
         this.buildInfoSet = buildInfoSet;
-        fetchInfo = buildFetchInfo();
-
-        // -- Old system below --
-
-        BuildUrlParser buildUrlParser = new BuildUrlParser(
-                UserPreferences.get(PrefKey.BUILDS_URL));
-        Map<String, String> optionsMap = buildUrlParser.getOptions();
-
-        int[] classIdSet = new int[] { 2, 4, 8, 16, 32, 64 };
-        if (optionsMap.containsKey("filter-class")) {
-
-            int classSum = Integer.parseInt(optionsMap.get("filter-class"));
-            classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, classIdSet));
-
-        } else {
-
-            // We'll get all classes if no class was specified by the user
-            classesToFetch.addAll(
-                    Arrays.stream(classIdSet).boxed().collect(Collectors.toList()));
-
-        }
-
-        fetchUrl = buildUrlParser.getFetchUrlWithoutClasses();
+        FETCH_INFO = buildFetchInfo();
     }
 
     // ----------------------------------------------
@@ -105,7 +75,7 @@ public final class Scraper extends Task<Boolean> {
     protected Boolean call() throws Exception {
         newBuildInfoSet = new HashSet<>();
 
-        for (FetchInfo fetchInfo : fetchInfo) {
+        for (FetchInfo fetchInfo : FETCH_INFO) {
             newBuildInfoSet.addAll(fetchNewBuilds(fetchInfo));
         }
 
@@ -152,11 +122,11 @@ public final class Scraper extends Task<Boolean> {
             } else {
 
                 thisFetchUrl += "&page=";
-                
+
                 for (int i = 0; i < pageCount; i++) {
 
                     int currentPage = i + 1;
-                    
+
                     updateProgress(0, 1);
                     updateMessage(String.format("Fetching %s builds, page %d of %d",
                             thisClass.toString(), currentPage, pageCount));

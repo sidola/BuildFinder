@@ -25,7 +25,7 @@ public class BuildUrlParser {
     //
     // ----------------------------------------------
 
-    private final static int[] classIdSets = new int[] { 2, 4, 8, 16, 32, 64 };
+    private final static int[] CLASS_IDS = D3Class.getAllClassIds();
 
     private final String USER_URL;
     private final boolean VALID_URL;
@@ -100,11 +100,11 @@ public class BuildUrlParser {
 
             if (optionsMap.containsKey("filter-class")) {
                 int classSum = Integer.parseInt(optionsMap.get("filter-class"));
-                classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, classIdSets));
+                classesToFetch.addAll(MathUtil.getValuesFromSum(classSum, CLASS_IDS));
             } else {
                 // We'll get all classes if no class was specified by the user
                 classesToFetch.addAll(
-                        Arrays.stream(classIdSets).boxed().collect(Collectors.toList()));
+                        Arrays.stream(CLASS_IDS).boxed().collect(Collectors.toList()));
             }
         }
 

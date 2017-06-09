@@ -1,716 +1,819 @@
-The Barber
-Pig Sticker
-Kill
-Voo's Juicer
-Blood-Magic Edge
-Wizardspike
-Deadly Rebirth
-Living Umbral Oath
-The Spider Queen's Grasp
-Anessazi Edge
-The Gidbinn
-Last Breath
-Monster Hunter
-Wildwood
-The Ancient Bonesaber of Zumakalis
-Doombringer
-Skycutter
-Griswold's Perfection
-Sever
-Devil Tongue
-Azurewrath
-The Zweihander
-Faithful Memory
-Scourge
-Blackguard
-Blade of Prophecy
-The Sultan of Blinding Sand
-Warmonger
-Maximus
-The Grandfather
-Genzaniku
-Utar's Roar
-Flesh Tearer
-The Butcher's Sickle
-The Burning Axe of Sankis
-Sky Splitter
-The Executioner
-Butcher's Carver
-Messerschmidt's Reaver
-Cinder Switch
-Skorn
-Odyn Son
-Nutcracker
-Telranden's Hand
-Neanderthal
-Nailbiter
-Devastator
-Echoing Fury
-Sun Keeper
-Arthef's Spark of Life
-Crushbane
-Wrath of the Bone King
-Skywarden
-Sunder
-Sledge of Athskeleng
-Schaefer's Hammer
-Pledge of Caldeum
-Standoff
-Heart Slaughter
-Vigilance
-Scrimshaw
-Arreat's Law
-The Three Hundredth Spear
-Empyrean Messenger
-Uskang
-Unbound Bolt
-The Raven's Wing
-Etrayu
-Cluckeye
-Sydyru Crust
-Windforce
-Bakkan Caster
-Demon Machine
-Buriza-Do Kyanon
-Arcane Barb
-Pus Spitter
-Hellrack
-Manticore
-Blitzbolter
-Izzuccob
-Valla's Bequest
-Balefire Caster
-Dawn
-Calamity
-Fjord Cutter
-Ambo's Pride
-Night's Reaping
-Blade of the Warlord
-War of the Dead
-Bastion's Revered
-The Gavel of Judgment
-Fury of the Vanished Peak
-Rabid Strike
-Fleshrake
-Scarbringer
-Sledge Fist
-Demon Claw
-Logan's Claw
-Won Khim Lau
-Crystal Fist
-The Fist of Az'Turrasq
-Balance
-Lai Yui's Persuader
-The Flow of Eternity
-The Paddle
-Incense Torch of the Grand Temple
-Rozpedin's Force
-Flying Dragon
-Autumn's Call
-Staff of Chiroptera
-Mark of The Magi
-The Broken Staff
-Maloth's Focus
-Wormwood
-The Tormentor
-The Grand Vizier
-Starfire
-Blackhand Key
-Gesture of Orpheus
-Fragment of Destiny
-Atrophy
-Slorak's Madness
-Gazing Demise
-Spite
-Homunculus
-Thing of the Deep
-Uhkapian Serpent
-Winter Flurry
-Cosmic Strand
-Triumvirate
-The Oculus
-Sin Seekers
-Fletcher's Pride
-Silver Star Piercers
-Spines of Seething Hatred
-Holy Point Shot
-Flint Ripper Arrowheads
-Meticulous Bolts
-Archfiend Arrows
-Dead Man's Legacy
-Wall of Man
-Denial
-Freeze of Deflection
-Lidless Wall
-Ivory Tower
-Stormshield
-Stormshield
-Broken Crown
-Leoric's Crown
-Blind Faith
-Skull of Resonance
-Andariel's Visage
-The Helm of Rule
-Mempo of Twilight
-Magefist
-Penders Purchase
-Stone Gauntlets
-Gladiator Gauntlets
-Frostburn
-Tasker and Theo
-The Crudest Boots
-Lut Socks
-Boj Anglers
-Rivera Dancers
-Board Walkers
-Fire Walkers
-Ice Climbers
-Vigilante Belt
-Fleeting Strap
-Goldwrap
-Saffron Wrap
-String of Ears
-Angel Hair Braid
-Hellcat Waistguard
-The Witching Hour
-Hunter's Wrath
-Steady Strikers
-Ashnagarr's Blood Bracer
-Gungdo Gear
-Slave Bonds
-Mortick's Brace
-Promise of Glory
-Kethryes' Splint
-Strongarm Bracers
-Lacuni Prowlers
-Aquila Cuirass
-Heart of Iron
-Chaingmail
-Goldskin
-Cindercoat
-Mantle of the Rydraelm
-Tyrael's Might
-Pox Faulds
-Hammer Jammers
-Swamp Land Waders
-Skelon's Deceit
-Depth Diggers
-Homing Pads
-Death Watch Mantle
-Corruption
-Vile Ward
-See No Evil
-Gyana Na Kashu
-The Mind's Eye
-Erlang Shen
-Bezoar Stone
-The Eye of the Storm
-Tzo Krin's Gaze
-Madstone
-Split Tusk
-Quetzalcoatl
-The Grin Reaper
-Tiklandian Visage
-Visage of Giyua
-The Swami
-Dark Mage's Shade
-Storm Crow
-Cape of the Dark Night
-Beckon Sail
-The Cloak of the Garwulf
-Girdle of Giants
-The Undisputed Champion
-Kotuur's Brace
-Pride of Cassius
-Dread Iron
-Thundergod's Vigor
+Accursed Visage
+Aether Walker
 Ageless Might
-Belt of the Trove
-Lamentation
-Moonlight Ward
-Squirt's Necklace
-Eye of Etlich
-Rondal's Locket
-Talisman of Aranoch
-Holy Beacon
-The Flavor of Time
-Kymbo's Gold
-Ouroboros
-The Star of Azkaranth
-Mara's Kaleidoscope
-Xephirian Amulet
-Nagelring
-Leoric's Signet
-Manald Heal
-Stolen Ring
-Band of Might
-Band of Untold Secrets
-Broken Promises
-Puzzle Ring
-Justice Lantern
-Obsidian Ring of the Zodiac
-Eternal Union
-Bul-Kathos's Wedding Band
+Ahavarion, Spear of Lycander
+Akanesh, the Herald of Righteousness
+Akarat's Awakening
+Akkhan's Addendum
+Akkhan's Leniency
+Akkhan's Manacles
+Alabaster Gloves
+Ambo's Pride
+Ancestors' Grace
+Ancient Parthan Defenders
+Andariel's Visage
+Anessazi Edge
+Angel Hair Braid
+Aquila Cuirass
+Arachyr's Carapace
+Arachyr's Claws
+Arachyr's Legs
+Arachyr's Mantle
+Arachyr's Stride
+Arachyr's Visage
+Arcane Barb
+Archfiend Arrows
+Archmage's Vicalyke
+Arcstone
+Armor of the Kind Regent
+Arreat's Law
+Arthef's Spark of Life
+Ashbringer
+Asheara's Clasp
+Asheara's Cradle
+Asheara's Custodian
+Asheara's Finders
+Asheara's Lock
+Asheara's Pace
+Asheara's Vigilance
+Asheara's Ward
+Ashnagarr's Blood Bracer
+Ashnagarr's Blood Ring
+Atrophy
+Aughild's Brow
+Aughild's Demands
+Aughild's Power
+Aughild's Rule
+Aughild's Search
+Aughild's Spike
+Aughild's Triumph
+Aughild's Vestments
+Augustine's Panacea
+Autumn's Call
+Avarice Band
+Azurewrath
+Bakkan Caster
+Bakuli Jungle Wraps
+Balance
+Balefire Caster
+Baleful Remnant
+Band of Fallen Heroes
 Band of Hollow Whispers
-Krede's Flame
-Skull Grasp
-Oculus Ring
-Stone of Jordan
-Unity
-Halo of Arlyse
-Convention of Elements
-Ring of Emptiness 
-Elusive Ring
-Bul-Kathos's Solemn Vow
-Bul-Kathos's Warrior Blood
-Danetta's Spite
-Danetta's Revenge
-Chantodo's Will
-Chantodo's Force
-Shenlong's Relentless Assault
-Shenlong's Fist of Legend
-Manajuma's Carving Knife
-Manajuma's Gory Fetch
-Natalya's Sight
-Natalya's Slayer
-Natalya's Embrace
-Natalya's Reflection
-Natalya's Bloody Footprints
-Natalya's Leggings
-Natalya's Touch
-Immortal King's Triumph
-Immortal King's Boulder Breaker
-Immortal King's Eternal Reign
-Immortal King's Tribal Binding
-Immortal King's Irons
-Immortal King's Stride
-Immortal King's Stature
-Tal Rasha's Unwavering Glare
-Tal Rasha's Guise of Wisdom
-Tal Rasha's Relentless Pursuit
-Tal Rasha's Brace
-Tal Rasha's Allegiance
-Tal Rasha's Stride
-Tal Rasha's Grasp
-Nilfur's Boast
-Inna's Radiance
-Inna's Reach
-Inna's Vast Expanse
-Inna's Favor
-Inna's Temperance
-Inna's Sandals
-Inna's Hold
-Zunimassa's Vision
-Zunimassa's Marrow
-Zunimassa's String of Skulls
-Zunimassa's Pox
-Zunimassa's Trail
-Zunimassa's Finger Wraps
-Zunimassa's Cloth
+Band of Might
+Band of the Rue Chambers
+Band of Untold Secrets
+Barter Town Pads
+Bastion's Revered
+Beckon Sail
+Belt of the Trove
+Belt of Transcendence
+Bezoar Stone
+Binding of the Lost
+Bindings of the Lesser Gods
+Blackfeather
+Blackguard
+Blackhand Key
+Blackthorne's Boots
+Blackthorne's Breeches
 Blackthorne's Duncraig Cross
+Blackthorne's Jacket
+Blackthorne's Jousting Mail
+Blackthorne's Medal
+Blackthorne's Notched Belt
+Blackthorne's Scabbard
 Blackthorne's Spurs
 Blackthorne's Surcoat
-Blackthorne's Notched Belt
-Blackthorne's Jousting Mail
-The Traveler's Pledge
-The Compass Rose
-The Wailing Host
-Litany of the Undaunted
-Born's Frozen Soul
-Born's Privilege
-Born's Furious Wrath
-Cain's Insight
-Cain's Habit
-Cain's Scrivener
-Cain's Travelers
-Captain Crimson's Waders
-Captain Crimson's Silk Girdle
-Captain Crimson's Thrust
-Aughild's Power
-Aughild's Search
-Aughild's Rule
-Aughild's Spike
-Asheara's Custodian
-Asheara's Ward
-Asheara's Pace
-Asheara's Finders
-Guardian's Aversion
-Guardian's Case
-Guardian's Gaze
-Demon's Marrow
-Demon's Restraint
-Demon's Plate
-Demon's Aileron
-Demon's Animus
-Sage's Purchase
-Sage's Passage
-Sage's Apogee
-Hallowed Barricade
-Hallowed Nemesis
-Hallowed Baton
-Hallowed Sufferance
-Hallowed Condemnation
-Hallowed Hold
-Hallowed Breach
-The Clipper
-The Horadric Hamburger
-Griswold's Worn Edge
-Rakanishu's Blade
-Spectrum
-Splintered Oar
-Wirt's Original Leg
-The Murlocket
-Karlei's Point
-Lord Greenstone's Fan
-Envious Blade
-Eun-jang-do
-Thunderfury, Blessed Blade of the Windseeker
-Exarian
-Gift of Silaria
-Fulminator
-God Butcher
-Ghoul King's Blade
-The Twisted Sword
-Incinerator
-Rimeheart
-Rancor
-Amberwing
-Deathwish
-In-geom
-Sword of Ill Will
-Stalgard's Decimator
-Cam's Rebuttal
-Blood Brother
-Corrupted Ashbringer
-Ashbringer
-Ch'il-chi-do
-Aidan's Revenge
-Mordullu's Promise
-Hack
-The Marauder
-Sungjae's Fury
-Burst of Wrath
-Mad Monarch's Scepter
-Solanium
-Jace's Hammer of Vigilance
-The Furnace
-Soulsmasher
-Bovine Bardiche
-Foushee Voulge
-Akanesh, the Herald of Righteousness
-Steffon's Heavy Lance
-Ahavarion, Spear of Lycander
-Valthek's Rebuke
-The Smoldering Core
-SuWong Diviner
-Defender of Westmarch
-Eberli Charo
-Guard of Johanna
-Vo'Toyias Spiker
-Shield of Fury
-Coven's Criterion
-Deathseer's Cowl
-Pride's Fall
-Profane Pauldrons
-Lefebvre's Soliloquy
-Spaulders of Zakara
-Pauldrons of the Skeleton King
-Warhelm of Kassar
-Visage of Gunes
-Fury of the Ancients
-Mantle of Channeling
-St. Archew's Gage
-Gloves of Worship
-Boots of Disregard
-Illusory Boots
-Irontoe Mudsputters
-Razor Strop
-Sash of Knives
-Insatiable Belt
-Cord of the Sherma
-Harrington Waistguard
-Jang's Envelopment
-Hwoj Wrap
-Sebor's Nightmare
-Crashing Rain
-Belt of Transcendence
-Haunting Girdle
-Omnislash
+Blade of Prophecy
+Blade of the Tribes
+Blade of the Warlord
 Blessed of Haull
-Omryn's Chain
-Sacred Harness
-Fazula's Improbable Chain
-Binding of the Lost
-Chain of Shadows
-The Shame of Delsere
-Zoey's Secret
-Kyoshiro's Soul
-Hergbrash's Binding
-Warzechian Armguards
-Ancient Parthan Defenders
-Reaper's Wraps
-Trag'Oul Coils
-Sanguinary Vambraces
-Nemesis Bracers
-Custerian Wristguards
-Ranslor's Folly
-Spirit Guards
-Drakon's Lesson
-Gabriel's Vambraces
-Bindings of the Lesser Gods
-Wraps of Clarity
+Blind Faith
+Blitzbolter
+Blood Brother
+Blood-Magic Edge
+Board Walkers
+Boj Anglers
+Bombardier's Rucksack
+Boneshatter
+Boots of Disregard
+Born for War All
+Born for War Attack
+Born for War Defense
+Born for War Precision
+Born for War Vitality
+Born's Carapace
+Born's Frozen Soul
+Born's Furious Wrath
+Born's Pauldrons
+Born's Privilege
+Born's Seething Rage
+Bovine Bardiche
+Bracer of Fury
 Bracers of Destruction
 Bracers of the First Men
-Jeram's Bracers
-Coils of the First Spider
-Skular's Salvation
-Lakumba's Ornament
-Akkhan's Manacles
-Bracer of Fury
-Pinto's Pride
-Vambraces of Sescheron
-Cesar's Memento
-Shi Mizu's Haori
-Armor of the Kind Regent
-Hexing Pants of Mr. Yan
-Death's Bargain
-Haunt of Vaxo
-Ancestors' Grace
-Countess Julia's Cameo
-The Ess of Johan
-Golden Gorget of Leoric
-Overwhelming Desire
-Dovu Energy Trap
-Rakoff's Glass of Life
-Halcyon's Ascent
-The Tall Man's Finger
-Wyrdward
-Rogar's Huge Stone
-Rechel's Ring of Larceny
-Gamuel's Deceit
-Band of the Rue Chambers
-Ring of Royal Grandeur
-Avarice Band
-Pandemonium Loop
-The Short Man's Finger
-Arcstone
-Ashnagarr's Blood Ring
-Remorseless
-Dishonored Legacy
-Oathkeeper
-Madawc's Sorrow
-Blade of the Tribes
-Chilanik's Chain
-Wodir Harness
-Piro Marella
-Jekangbord
-Hallowed Bulwark
-Akarat's Awakening
-Hellskull
-Sublime Conviction
-The Final Witness
-Frydehr's Wrath
-Unrelenting Phalanx
-Salvation
-Golden Scourge
-Justinian's Mercy
-Swiftmount
-Kassar's Retribution
-Gyrfalcon's Foote
-Darklight
-Inviolable Faith
-Johanna's Argument
-The Mortal Drama
-Baleful Remnant
-Fate of the Fell
-Golden Flense
-Akkhan's Leniency
-Akkhan's Addendum
-The Ninth Cirri Satchel
-Bombardier's Rucksack
-Emimei's Duffel
-Hunter's Longbox
-Kridershot
-Odyssey's End
-Leonine Bow of Hashir
-Yang's Recurve
-Chanon Bolter
-Wojahnni Assaulter
-K'mar Tenclip
-Helltrapper
-Lianna's Wings
-Fortress Ballista
-The Demon's Demise
-Blackfeather
-Cloak of Deception
-The Laws of Seph
-Kekegi's Unbreakable Spirit
-Eye of Peshkov
-Staff of Kyro
-Warstaff of General Quang
-Jawbreaker
-Kyoshiro's Blade
-Lion's Claw
-Vengeful Wind
-Shukrani's Triumph
-Sorrowful Countenance
-Vile Hive
-Wilken's Reach
-Henri's Perquisition
+Breastplate of Akkhan
+Broken Promises
+Bul-Kathos's Sacred Charge
+Bul-Kathos's Solemn Vow
+Bul-Kathos's Tribal Guardian
+Bul-Kathos's Warrior Blood
+Bul-Kathos's Wedding Band
+Burden of the Invoker
+Buriza-Do Kyanon
+Burst of Wrath
+Butcher's Carver
+Cage of the Hellborn
+Cain's Habit
+Cain's Insight
+Cain's Laurel
+Cain's Raiment
+Cain's Scrivener
+Cain's Slippers
+Cain's Travelers
+Cain's Warmers
+Calamity
+Cam's Rebuttal
+Cape of the Dark Night
+Captain Crimson's Brace
+Captain Crimson's Codpiece
+Captain Crimson's Deck Boots
+Captain Crimson's Silk Girdle
+Captain Crimson's Thrust
+Captain Crimson's Waders
 Carnevil
-Mask of Jeram
-Starmetal Kukri
-Rhen'ho Flayer
-Sacred Harvester
-The Dagger of Darts
-Archmage's Vicalyke
-Velvet Camaral
-The Magistrate
+Centurion
+Cesar's Memento
+Ch'il-chi-do
+Chain of Shadows
+Chaingmail
+Chanon Bolter
+Chantodo's Elemental Seal
+Chantodo's Force
+Chantodo's Sacred Protector
+Chantodo's Will
+Chilanik's Chain
+Cinder Switch
+Cindercoat
+Cloak of Deception
+Cluckeye
+Coils of the First Spider
+Convention of Elements
+Cord of the Sherma
+Corrupted Ashbringer
+Corruption
+Cosmic Strand
+Countess Julia's Cameo
+Coven's Criterion
+Crashing Rain
+Crown of the Invoker
+Crown of the Light
 Crown of the Primus
-Wand of Woh
-Serpent's Sparker
-Aether Walker
-Unstable Scepter
-Mirrorball
-Myken's Ball of Hate
-Light of Grace
-Primordial Soul
+Crushbane
+Crystal Fist
+Cuirass of the Wastes
+Cuisses of Akkhan
+Custerian Wristguards
+Danetta's Fury
+Danetta's Rage
+Danetta's Revenge
+Danetta's Spite
+Dark Mage's Shade
+Darklight
+Dashing Pauldrons of Despair
+Dawn
+Dead Man's Legacy
+Deadly Rebirth
+Death Mask
+Death Watch Mantle
+Death's Bargain
+Deathreach
+Deathseer's Cowl
+Deathwish
+Defender of Westmarch
+Demon Claw
+Demon Machine
+Demon's Aileron
+Demon's Animus
+Demon's Binding
+Demon's Cage
+Demon's Flesh
+Demon's Manacles
+Demon's Marrow
+Demon's Plate
+Demon's Restraint
+Demon's Wings
+Denial
+Depth Diggers
+Devastator
+Devil Tongue
+Dishonored Legacy
+Doombringer
+Dovu Energy Trap
+Drakon's Lesson
+Dread Iron
+Eberli Charo
+Echoing Fury
+Eight-Demon Boots
+Elusive Ring
+Emimei's Duffel
+Empyrean Messenger
+Envious Blade
+Erlang Shen
 Etched Sigil
-Orb of Infinite Depth
-Focus
-Restraint
-Krelm's Buff Belt
-Krelm's Buff Bracers
-The Slanderer
-Little Rogue
-Flail of the Charge
-Shield of the Steed
-Raekor's Will
-Raekor's Burden
-Raekor's Heart
-Raekor's Breeches
-Raekor's Striders
-Raekor's Wraps
-Firebird's Plume
-Firebird's Pinions
+Eternal Union
+Etrayu
+Eun-jang-do
+Exarian
+Eye of Etlich
+Eye of Peshkov
+Eyes of the Earth
+Faithful Memory
+Fate of the Fell
+Fazula's Improbable Chain
+Fiendish Grips
+Fierce Gauntlets
+Fire Walkers
 Firebird's Breast
 Firebird's Down
-Firebird's Tarsi
-Firebird's Talons
 Firebird's Eye
-Marauder's Visage
-Marauder's Spines
+Firebird's Pinions
+Firebird's Plume
+Firebird's Talons
+Firebird's Tarsi
+Fists of Thunder
+Fjord Cutter
+Flail of the Ascended
+Flail of the Charge
+Fleeting Strap
+Flesh Tearer
+Fleshrake
+Fletcher's Pride
+Flint Ripper Arrowheads
+Flying Dragon
+Focus
+Fortress Ballista
+Foundation of the Earth
+Foundation of the Light
+Foushee Voulge
+Fragment of Destiny
+Freeze of Deflection
+Frostburn
+Frostburn Gauntlets
+Frydehr's Wrath
+Fulminator
+Fury of the Ancients
+Fury of the Vanished Peak
+Gabriel's Vambraces
+Gamuel's Deceit
+Gauntlet of the Wastes
+Gauntlets of Akkhan
+Gazing Demise
+Genzaniku
+Gesture of Orpheus
+Giant Skull
+Gift of Silaria
+Girdle of Giants
+Gladiator Gauntlets
+Gloves of Worship
+Golden Flense
+Golden Gorget of Leoric
+Golden Scourge
+Goldskin
+Goldwrap
+Grim Reaper
+Griswold's Perfection
+Griswold's Worn Edge
+Guard of Johanna
+Guardian's Aversion
+Guardian's Bands
+Guardian's Case
+Guardian's Gaze
+Guardian's Scabbard
+Guardian's Watch
+Gungdo Gear
+Gyana Na Kashu
+Gyrfalcon's Foote
+Hack
+Halcyon's Ascent
+Hallowed Avenger
+Hallowed Barricade
+Hallowed Barrier
+Hallowed Baton
+Hallowed Breach
+Hallowed Bulwark
+Hallowed Condemnation
+Hallowed Destroyer
+Hallowed Divide
+Hallowed Helm
+Hallowed Hold
+Hallowed Nemesis
+Hallowed Rod
+Hallowed Sacrifice
+Hallowed Sufferance
+Hallowed Touch
+Halo of Arlyse
+Halo of Karini
+Hammer Jammers
+Harness of Truth
+Harrington Waistguard
+Haunt of Vaxo
+Haunting Girdle
+Heart of Iron
+Heart of the Crashing Wave
+Heart of the Light
+Heart Slaughter
+Hell Walkers
+Hellcat Waistguard
+Hellfire Amulet
+Hellfire Ring
+Hellrack
+Hellskull
+Helltooth Gauntlets
+Helltooth Greaves
+Helltooth Leg Guards
+Helltooth Mantle
+Helltooth Mask
+Helltooth Tunic
+Helltrapper
+Helm of Akkhan
+Helm of the Wastes
+Henri's Perquisition
+Hergbrash's Binding
+Hexing Pants of Mr. Yan
+Hierophant's Seal
+Holy Beacon
+Holy Point Shot
+Homing Pads
+Homunculus
+Hunter's Longbox
+Hunter's Wrath
+Hwoj Wrap
+Ice Climbers
+Illusory Boots
+Immortal King's Boulder Breaker
+Immortal King's Detail
+Immortal King's Eternal Reign
+Immortal King's Forge
+Immortal King's Irons
+Immortal King's Pillar
+Immortal King's Soul Cage
+Immortal King's Stature
+Immortal King's Stone Crusher
+Immortal King's Stride
+Immortal King's Tribal Binding
+Immortal King's Triumph
+Immortal King's Will
+In-geom
+Incense Torch of the Grand Temple
+Incinerator
+Infernal Pauldrons
+Inna's Blessing
+Inna's Favor
+Inna's Glory
+Inna's Hold
+Inna's Justice
+Inna's Radiance
+Inna's Reach
+Inna's Refuge
+Inna's Sandals
+Inna's Splendor
+Inna's Temperance
+Inna's Vast Expanse
+Insatiable Belt
+Inviolable Faith
+Irontoe Mudsputters
+Ivory Tower
+Izzuccob
+Jace's Hammer of Vigilance
+Jade Harvester's Courage
+Jade Harvester's Joy
+Jade Harvester's Mercy
+Jade Harvester's Peace
+Jade Harvester's Swiftness
+Jade Harvester's Wisdom
+Jang's Envelopment
+Jawbreaker
+Jekangbord
+Jeram's Bracers
+Johanna's Argument
+Justice Lantern
+Justinian's Mercy
+K'mar Tenclip
+Karlei's Point
+Kassar's Retribution
+Kekegi's Unbreakable Spirit
+Kethryes' Splint
+Kill
+Kotuur's Brace
+Krede's Flame
+Krelm's Buff Belt
+Krelm's Buff Bracers
+Kridershot
+Kymbo's Gold
+Kyoshiro's Blade
+Kyoshiro's Soul
+Lacuni Prowlers
+Lai Yui's Persuader
+Lakumba's Ornament
+Lamentation
+Last Breath
+Lefebvre's Soliloquy
+Leg Guards of Mystery
+Leonine Bow of Hashir
+Leoric's Crown
+Leoric's Signet
+Lianna's Wings
+Lidless Wall
+Lifebane
+Light of Grace
+Lion's Claw
+Litany of the Undaunted
+Little Rogue
+Living Umbral Oath
+Logan's Claw
+Lord Greenstone's Fan
+Lut Socks
+Mad Monarch's Scepter
+Madawc's Sorrow
+Madstone
+Magefist
+Maloth's Focus
+Manajuma's Carving Knife
+Manajuma's Gory Fetch
+Manajuma's Ritual Cutter
+Manajuma's Ritual Prize
+Manald Heal
+Manticore
+Mantle of Channeling
+Mantle of the Rydraelm
+Mantle of the Upside-Down Sinners
+Mara's Kaleidoscope
 Marauder's Carapace
 Marauder's Encasement
-Marauder's Treads
 Marauder's Gloves
+Marauder's Spines
+Marauder's Treads
+Marauder's Visage
+Mark of The Magi
+Mask of Jeram
 Mask of the Searing Sky
-Mantle of the Upside-Down Sinners
-Heart of the Crashing Wave
-Scales of the Dancing Serpent
-Eight-Demon Boots
-Fists of Thunder
-Jade Harvester's Wisdom
-Jade Harvester's Joy
-Jade Harvester's Peace
-Jade Harvester's Courage
-Jade Harvester's Swiftness
-Jade Harvester's Mercy
-Helm of Akkhan
+Maximus
+Mempo of Twilight
+Messerschmidt's Reaver
+Meticulous Bolts
+Mirrorball
+Monster Hunter
+Moon Slayer
+Moonlight Ward
+Mordullu's Promise
+Mortal Coil
+Mortick's Brace
+Mountain of the Light
+Myken's Ball of Hate
+Nagelring
+Nailbiter
+Natalya's Bloody Footprints
+Natalya's Embrace
+Natalya's Gaze
+Natalya's Leggings
+Natalya's Mark
+Natalya's Redemption
+Natalya's Reflection
+Natalya's Shadow
+Natalya's Sight
+Natalya's Slayer
+Natalya's Soul
+Natalya's Touch
+Neanderthal
+Nemesis Bracers
+Night's Reaping
+Nilfur's Boast
+Nutcracker
+Oathkeeper
+Obsidian Ring of the Zodiac
+Oculus Ring
+Odyn Son
+Odyssey's End
+Omnislash
+Omryn's Chain
+Orb of Infinite Depth
+Ouroboros
+Overwhelming Desire
+Pandemonium Loop
 Pauldrons of Akkhan
-Breastplate of Akkhan
-Cuisses of Akkhan
-Sabatons of Akkhan
-Gauntlets of Akkhan
-Sunwuko's Paws
-Sunwuko's Balance
-Sunwuko's Crown
-Sunwuko's Shines
-Sunwuko's Soul
-Sunwuko's Leggings
-Crown of the Invoker
-Burden of the Invoker
+Pauldrons of the Skeleton King
+Pauldrons of the Wastes
+Penders Purchase
+Pig Sticker
+Pinto's Pride
+Piro Marella
+Pledge of Caldeum
+Pox Faulds
+Pride of Cassius
 Pride of the Invoker
-Shackles of the Invoker
-Zeal of the Invoker
-Renewal of the Invoker
-Vyr's Astonishing Aura
-Vyr's Fantastic Finery
-Vyr's Swaggering Stance
-Vyr's Grasping Gauntlets
-Vyr's Proud Pauldrons
-Vyr's Sightless Skull
-The Shadow's Bane
-The Shadow's Coil
-The Shadow's Heels
-The Shadow's Grasp
-The Shadow's Mask
-The Shadow's Burden
+Pride's Fall
+Primordial Soul
+Profane Pauldrons
+Promise of Glory
 Pull of the Earth
-Eyes of the Earth
-Weight of the Earth
-Spires of the Earth
-Spirit of the Earth
-Foundation of the Earth
-Helltooth Mask
-Helltooth Mantle
-Helltooth Tunic
-Helltooth Leg Guards
-Helltooth Greaves
-Helltooth Gauntlets
-Roland's Visage
-Roland's Mantle
+Pus Spitter
+Puzzle Ring
+Quetzalcoatl
+Quietus
+Rabid Strike
+Raekor's Breeches
+Raekor's Burden
+Raekor's Heart
+Raekor's Striders
+Raekor's Will
+Raekor's Wraps
+Rakanishu's Blade
+Rakoff's Glass of Life
+Rancor
+Ranslor's Folly
+Razor Strop
+Reaper's Wraps
+Rechel's Ring of Larceny
+Remorseless
+Renewal of the Invoker
+Restraint
+Rhen'ho Flayer
+Rimeheart
+Ring of Emptiness
+Ring of Royal Grandeur
+Rivera Dancers
+Rogar's Huge Stone
 Roland's Bearing
 Roland's Determination
-Roland's Stride
 Roland's Grasp
-Helm of the Wastes
-Pauldrons of the Wastes
-Cuirass of the Wastes
-Tasset of the Wastes
+Roland's Mantle
+Roland's Stride
+Roland's Visage
+Rondal's Locket
+Rozpedin's Force
 Sabaton of the Wastes
-Gauntlet of the Wastes
+Sabatons of Akkhan
+Sacred Harness
+Sacred Harvester
+Sacrificer
+Saffron Wrap
+Sage's Apogee
+Sage's Grasp
+Sage's Passage
+Sage's Purchase
+Sage's Seekers
+Sage's Stones
+Salvation
+Sanguinary Vambraces
+Sash of Knives
+Scales of the Dancing Serpent
+Scarbringer
+Schaefer's Hammer
+Scourge
+Screaming Chain
+Scrimshaw
+Sean's Ring of Testing
+Sebor's Nightmare
+See No Evil
+Serpent's Sparker
+Sever
+Shackles of the Invoker
+Shard of Hate
+Shenlong's Crashing Tide
+Shenlong's Endless Wave
+Shenlong's Fist of Legend
+Shenlong's Relentless Assault
+Sherman Signet All
+Sherman Signet Attack
+Sherman Signet Defense
+Sherman Signet Precision
+Sherman Signet Vitality
+Shi Mizu's Haori
+Shield of Fury
+Shield of the Steed
 Shrouded Mask
-Dashing Pauldrons of Despair
-Harness of Truth
-Leg Guards of Mystery
+Shukrani's Triumph
+Signet Ring of the Blizzard
+Signet Ring of the Blizzard  
+Silver Star Piercers
+Sin Seekers
+Skelon's Deceit
+Skorn
+Skular's Salvation
+Skull Grasp
+Skull of Resonance
+Sky Splitter
+Skycutter
+Skywarden
+Slave Bonds
+Sledge Fist
+Sledge of Athskeleng
+Slorak's Madness
+Solanium
+Sorrowful Countenance
+Soulsmasher
+Spaulders of Zakara
+Spectrum
+Spines of Seething Hatred
+Spires of the Earth
+Spirit Guards
+Spirit of Adventure
+Spirit of the Earth
+Spite
+Splintered Oar
+Split Tusk
+Squirt's Necklace
+St. Archew's Gage
+Staff of Chiroptera
+Staff of Herding
+Staff of Kyro
+Stalgard's Decimator
+Standoff
+Starfire
+Starmetal Kukri
+Steady Strikers
+Stolen Ring
+Stone Gauntlets
+Stone of Jordan
+Storm Crow
+Stormshield
 Striders of Destiny
-Fierce Gauntlets
-Accursed Visage
-Unsanctified Shoulders
-Cage of the Hellborn
-Unholy Plates
-Hell Walkers
-Fiendish Grips
-Uliana's Spirit
-Uliana's Strength
-Uliana's Heart
+String of Ears
+Strongarm Bracers
+Sublime Conviction
+Sun Keeper
+Sunder
+Sunwuko's Balance
+Sunwuko's Crown
+Sunwuko's Leggings
+Sunwuko's Paws
+Sunwuko's Shines
+Sunwuko's Soul
+SuWong Diviner
+Swamp Land Waders
+Swiftmount
+Sword of Ill Will
+Sydyru Crust
+Tal Rasha's Adjudication
+Tal Rasha's Allegiance
+Tal Rasha's Brace
+Tal Rasha's Finespun Cloth
+Tal Rasha's Grasp
+Tal Rasha's Guardianship
+Tal Rasha's Guise of Wisdom
+Tal Rasha's Horadric Crest
+Tal Rasha's Lidless Eye
+Tal Rasha's Relentless Pursuit
+Tal Rasha's Stride
+Tal Rasha's Unwavering Glare
+Talisman of Akkhan
+Talisman of Aranoch
+Tasker and Theo
+Tasset of the Wastes
+Telranden's Hand
+TEMP Channeling Ring 
+The Ancient Bonesaber of Zumakalis
+The Barber
+The Broken Staff
+The Burning Axe of Sankis
+The Butcher's Sickle
+The Clipper
+The Cloak of the Garwulf
+The Clouds and the Moon
+The Compass Rose
+The Crudest Boots
+The Dagger of Darts
+The Demon's Demise
+The Ess of Johan
+The Executioner
+The Eye of the Storm
+The Final Witness
+The Fist of Az'Turrasq
+The Flavor of Time
+The Flow of Eternity
+The Furnace
+The Gavel of Judgment
+The Gidbinn
+The Grand Vizier
+The Grandfather
+The Grin Reaper
+The Helm of Rule
+The Horadric Hamburger
+The Inquisitor
+The Laws of Seph
+The Magistrate
+The Marauder
+The Mind's Eye
+The Mortal Drama
+The Murlocket
+The Ninth Cirri Satchel
+The Oculus
+The Paddle
+The Raven's Wing
+The Shadow's Bane
+The Shadow's Burden
+The Shadow's Coil
+The Shadow's Grasp
+The Shadow's Heels
+The Shadow's Mask
+The Shame of Delsere
+The Short Man's Finger
+The Slanderer
+The Smoldering Core
+The Spider Queen's Grasp
+The Star of Azkaranth
+The Sultan of Blinding Sand
+The Swami
+The Tall Man's Finger
+The Three Hundredth Spear
+The Tormentor
+The Traveler's Pledge
+The Twisted Sword
+The Undisputed Champion
+The Wailing Host
+The Witching Hour
+The Zweihander
+Thing of the Deep
+Thunder God's Vigor
+Thunderfury, Blessed Blade of the Windseeker
+Thundergod's Vigor
+Tiklandian Visage
+Towers of the Light
+Trag'Oul Coils
+Triumvirate
+Tyrael's Might
+Tzo Krin's Gaze
+Uhkapian Serpent
 Uliana's Burden
 Uliana's Destiny
 Uliana's Fury
-Arachyr's Visage
-Arachyr's Mantle
-Arachyr's Carapace
-Arachyr's Legs
-Arachyr's Stride
-Arachyr's Claws
-Crown of the Light
-Mountain of the Light
-Heart of the Light
-Towers of the Light
-Foundation of the Light
+Uliana's Heart
+Uliana's Spirit
+Uliana's Strength
+Unbound Bolt
+Unholy Plates
+Unity
+Unrelenting Phalanx
+Unsanctified Shoulders
+Unstable Scepter
+Uskang
+Utar's Roar
+Valla's Bequest
+Valthek's Rebuke
+Vambraces of Sescheron
+Velvet Camaral
+Vengeful Wind
+Vigilance
+Vigilante Belt
+Vile Hive
+Vile Ward
+Visage of Giyua
+Visage of Gunes
+Vo'Toyias Spiker
+Voo's Juicer
+Vyr's Astonishing Aura
+Vyr's Fantastic Finery
+Vyr's Grasping Gauntlets
+Vyr's Proud Pauldrons
+Vyr's Sightless Skull
+Vyr's Swaggering Stance
+Wall of Man
+Wand of Woh
+Wanderlust
+War of the Dead
+Warhelm of Kassar
+Warmonger
+Warstaff of General Quang
+Warzechian Armguards
+Weight of the Earth
+Wildwood
+Wilken's Reach
 Will of the Light
-Hallowed Helm
-Death Mask
-Sacrificer
-Deathreach
-Mortal Coil
-Quietus
-Grim Reaper
-Heart of Darkness
-Lifebane
-Hellfire Ring
-Hellfire Amulet
-Shard of Hate
-Infernal Pauldrons
-Signet Ring of the Blizzard
+Windforce
+Winter Flurry
+Wirt's Original Leg
+Wizardspike
+Wodir Harness
+Wojahnni Assaulter
+Won Khim Lau
+Wormwood
+Wraps of Clarity
+Wrath of the Bone King
+Wyrdward
+Xephirian Amulet
+Yang's Recurve
+Zeal of the Invoker
+Ziggurat Tooth
+Zoey's Secret
+Zunimassa's Attunement
+Zunimassa's Cloth
+Zunimassa's Ferocity
+Zunimassa's Finger Wraps
+Zunimassa's Journey
+Zunimassa's Marrow
+Zunimassa's Plague
+Zunimassa's Pox
+Zunimassa's String of Skulls
+Zunimassa's Trail
+Zunimassa's Vessel
+Zunimassa's Vision

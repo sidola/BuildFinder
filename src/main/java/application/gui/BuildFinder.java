@@ -1,6 +1,7 @@
 package application.gui;
 
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -85,6 +86,22 @@ public class BuildFinder extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+
+                ExceptionDialog exceptionDialog = new ExceptionDialog(AlertType.ERROR,
+                        "An exception occured.", e);
+
+                exceptionDialog.initOwner(primaryStage);
+                exceptionDialog.showAndWait();
+                System.exit(0);
+
+            }
+        });
+
         // Set language
         Locale.setDefault(Locale.ENGLISH);
 

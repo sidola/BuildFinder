@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import application.BuildDataManager;
 import application.Scraper;
-import application.config.UserPreferences;
-import application.config.UserPreferences.PrefKey;
 import application.gui.BuildFinder;
 import application.gui.component.ExceptionDialog;
 import application.gui.component.StatusBarProgressBar;
@@ -28,7 +26,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;

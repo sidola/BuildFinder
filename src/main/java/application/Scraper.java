@@ -50,6 +50,8 @@ public final class Scraper extends Task<Boolean> {
 
     private Set<BuildInfo> newBuildInfoSet;
 
+    private BuildDownloader buildDownloader;
+
     // ----------------------------------------------
     //
     // Constructor
@@ -65,6 +67,18 @@ public final class Scraper extends Task<Boolean> {
     public Scraper(Set<BuildInfo> buildInfoSet) {
         this.buildInfoSet = buildInfoSet;
         FETCH_INFO = buildFetchInfo();
+    }
+
+    // ----------------------------------------------
+    //
+    // Public API
+    //
+    // ----------------------------------------------
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        buildDownloader.cancelWork();
+        return super.cancel(mayInterruptIfRunning);
     }
 
     // ----------------------------------------------
@@ -214,8 +228,7 @@ public final class Scraper extends Task<Boolean> {
             return buildSet;
         }
 
-        BuildDownloader buildDownloader = new BuildDownloader(THREAD_COUNT,
-                buildSet.size());
+        buildDownloader = new BuildDownloader(THREAD_COUNT, buildSet.size());
 
         for (BuildInfo buildInfo : buildSet) {
             buildDownloader.queueWork(buildInfo);

@@ -33,6 +33,8 @@ import javafx.concurrent.Task;
  */
 public final class Scraper extends Task<Boolean> {
 
+    private static final int THREAD_COUNT = 7;
+
     // ----------------------------------------------
     //
     // Fields
@@ -76,7 +78,8 @@ public final class Scraper extends Task<Boolean> {
         newBuildInfoSet = new HashSet<>();
 
         for (FetchInfo fetchInfo : FETCH_INFO) {
-            newBuildInfoSet.addAll(fetchNewBuilds(fetchInfo));
+            Set<BuildInfo> newBuilds = fetchNewBuilds(fetchInfo);
+            newBuildInfoSet.addAll(newBuilds);
         }
 
         if (!isCancelled()) {
@@ -211,7 +214,9 @@ public final class Scraper extends Task<Boolean> {
             return buildSet;
         }
 
-        BuildDownloader buildDownloader = new BuildDownloader(7, buildSet.size());
+        BuildDownloader buildDownloader = new BuildDownloader(THREAD_COUNT,
+                buildSet.size());
+
         for (BuildInfo buildInfo : buildSet) {
             buildDownloader.queueWork(buildInfo);
         }

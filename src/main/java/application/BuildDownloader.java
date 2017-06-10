@@ -60,7 +60,7 @@ public class BuildDownloader {
         resultQueue = new ArrayBlockingQueue<>(workLoad);
 
         for (int i = 0; i < numOfWorkers; i++) {
-            executorService.submit(new Worker(workQueue, resultQueue));
+            executorService.execute(new Worker(workQueue, resultQueue));
         }
     }
 

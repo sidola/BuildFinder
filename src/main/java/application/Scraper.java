@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +24,7 @@ import application.model.BuildInfo;
 import application.model.D3Class;
 import application.util.BuildUrlParser;
 import javafx.concurrent.Task;
+import javafx.util.Pair;
 
 /**
  * Takes care of scraping HTML information and extracting the relevant data.
@@ -77,7 +77,10 @@ public final class Scraper extends Task<Boolean> {
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        buildDownloader.cancelWork();
+        if (buildDownloader != null) {
+            buildDownloader.cancelWork();
+        }
+
         return super.cancel(mayInterruptIfRunning);
     }
 
@@ -245,7 +248,7 @@ public final class Scraper extends Task<Boolean> {
 
             updateMessage("Downloading build " + workDone + " of " + buildSet.size());
 
-            Entry<BuildInfo, Document> buildInfoResult = buildDownloader.getResult();
+            Pair<BuildInfo, Document> buildInfoResult = buildDownloader.getResult();
             processBuildInfo(buildInfoResult.getKey(), buildInfoResult.getValue());
 
             updateProgress(workDone, buildSet.size());

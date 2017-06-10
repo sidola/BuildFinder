@@ -591,7 +591,7 @@ public final class MainController {
 
             statusBarProgressBar.setTask(scraper);
 
-            Thread thread = new Thread(scraper);
+            Thread thread = new Thread(scraper, "Scraper thread");
             thread.setDaemon(true);
             thread.start();
 
@@ -612,7 +612,7 @@ public final class MainController {
                 ExceptionDialog exceptionDialog = new ExceptionDialog(AlertType.ERROR,
                         "Something broke when parsing the html data. "
                                 + "See more details for more information.",
-                        (Exception) f.getSource().getException());
+                        f.getSource().getException());
 
                 exceptionDialog.initOwner(mainReference.getPrimaryStage());
                 exceptionDialog.showAndWait();

@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.AbstractMap;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import application.model.BuildInfo;
+import javafx.util.Pair;
 
 /**
  * Responsible for running several threads that download data about the builds
@@ -33,7 +32,7 @@ public class BuildDownloader {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private BlockingQueue<BuildInfo> workQueue;
-    private BlockingQueue<Map.Entry<BuildInfo, Document>> resultQueue;
+    private BlockingQueue<Pair<BuildInfo, Document>> resultQueue;
 
     private final int workLoad;
     private volatile int workDone = 0;
@@ -77,7 +76,7 @@ public class BuildDownloader {
         try {
             workQueue.put(buildInfo);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
         }
     }
 
@@ -85,11 +84,10 @@ public class BuildDownloader {
      * Returns an entry from the internal queue of finished work. Blocks if the
      * internal queue is empty.
      */
-    public Map.Entry<BuildInfo, Document> getResult() {
+    public Pair<BuildInfo, Document> getResult() {
         try {
             return resultQueue.take();
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
             throw new RuntimeException(e);
         }
     }
@@ -131,7 +129,7 @@ public class BuildDownloader {
         // ----------------------------------------------
 
         private final BlockingQueue<BuildInfo> workQueue;
-        private BlockingQueue<Map.Entry<BuildInfo, Document>> resultQueue;
+        private BlockingQueue<Pair<BuildInfo, Document>> resultQueue;
 
         // ----------------------------------------------
         //
@@ -140,7 +138,7 @@ public class BuildDownloader {
         // ----------------------------------------------
 
         public Worker(BlockingQueue<BuildInfo> workQueue,
-                BlockingQueue<Map.Entry<BuildInfo, Document>> resultQueue) {
+                BlockingQueue<Pair<BuildInfo, Document>> resultQueue) {
             this.workQueue = workQueue;
             this.resultQueue = resultQueue;
         }
@@ -160,16 +158,16 @@ public class BuildDownloader {
                     BuildInfo buildInfo = workQueue.take();
                     String html = downloadHtml(buildInfo.getBuildUrl());
 
-                    @SuppressWarnings("serial")
-                    AbstractMap.SimpleEntry<BuildInfo, Document> mapEntry = new AbstractMap.SimpleEntry<BuildInfo, Document>(
-                            buildInfo, Jsoup.parse(html.toString())) {
-                    };
+                    resultQueue.put(new Pair<BuildInfo, Document>(buildInfo,
+                            Jsoup.parse(html.toString())));
 
-                    resultQueue.put(mapEntry);
                     workDone++;
 
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+                } catch (Exception e) {
+                    // FIXME: What do we actually want to do here?
+
+                    // System.err.println(e);
+                    // PARENT_THREAD.interrupt();
                 }
 
             }
@@ -184,21 +182,15 @@ public class BuildDownloader {
         /**
          * Downloads the HTML form the given {@link URL}.
          */
-        private String downloadHtml(URL url) {
-            try {
+        private String downloadHtml(URL url) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(url.openStream(), "UTF-8"));
 
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(url.openStream(), "UTF-8"));
+            StringBuilder html = new StringBuilder();
+            bufferedReader.lines().forEach(html::append);
+            bufferedReader.close();
 
-                StringBuilder html = new StringBuilder();
-                bufferedReader.lines().forEach(html::append);
-                bufferedReader.close();
-
-                return html.toString();
-
-            } catch (IOException e) {
-                throw new IllegalStateException("Could not fetch the document", e);
-            }
+            return html.toString();
         }
     }
 

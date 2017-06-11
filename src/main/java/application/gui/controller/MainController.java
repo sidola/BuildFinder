@@ -611,7 +611,7 @@ public final class MainController {
             scraper.setOnFailed(f -> {
                 ExceptionDialog exceptionDialog = new ExceptionDialog(AlertType.ERROR,
                         "Something broke when parsing the html data. "
-                                + "See more details for more information.",
+                                + "See the details for more information.",
                         f.getSource().getException());
 
                 exceptionDialog.initOwner(mainReference.getPrimaryStage());

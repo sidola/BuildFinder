@@ -49,8 +49,9 @@ public final class Scraper extends Task<Boolean> {
     private final List<FetchInfo> FETCH_INFO;
 
     private Set<BuildInfo> newBuildInfoSet;
-
     private BuildDownloader buildDownloader;
+
+    private boolean downloadedAllBuilds = true;
 
     // ----------------------------------------------
     //
@@ -103,7 +104,7 @@ public final class Scraper extends Task<Boolean> {
             updateStoredBuildInfo(newBuildInfoSet);
         }
 
-        return true;
+        return downloadedAllBuilds;
     }
 
     // ----------------------------------------------
@@ -240,6 +241,8 @@ public final class Scraper extends Task<Boolean> {
         long workDone = 1;
         updateProgress(workDone, buildSet.size());
 
+        Set<BuildInfo> failedBuilds = new HashSet<>();
+
         while (buildDownloader.hasWork()) {
             if (isCancelled()) {
                 buildDownloader.cancelWork();
@@ -248,13 +251,34 @@ public final class Scraper extends Task<Boolean> {
 
             updateMessage("Downloading build " + workDone + " of " + buildSet.size());
 
-            Pair<BuildInfo, Document> buildInfoResult = buildDownloader.getResult();
-            processBuildInfo(buildInfoResult.getKey(), buildInfoResult.getValue());
+            ResultItem<Pair<BuildInfo, Document>> resultItem = buildDownloader
+                    .getResult();
+
+            if (resultItem.succeeded()) {
+
+                Pair<BuildInfo, Document> buildInfoResult = resultItem.getResult();
+                processBuildInfo(buildInfoResult.getKey(), buildInfoResult.getValue());
+
+            } else {
+
+                Throwable throwable = resultItem.getThrowable();
+
+                if (throwable instanceof IOException) {
+
+                    failedBuilds.add(resultItem.getResult().getKey());
+                    downloadedAllBuilds = false;
+
+                } else {
+                    throw new RuntimeException(throwable);
+                }
+
+            }
 
             updateProgress(workDone, buildSet.size());
             workDone++;
         }
 
+        buildSet.removeAll(failedBuilds);
         buildSet.addAll(upToDateBuilds);
         return buildSet;
     }

@@ -612,6 +612,20 @@ public final class MainController {
             statusBarProgressBar.show();
 
             scraper.setOnSucceeded(f -> {
+
+                boolean downloadedAllBuilds = (boolean) f.getSource().getValue();
+
+                if (!downloadedAllBuilds) {
+                    Alert noUpdatesAlert = new Alert(AlertType.WARNING);
+                    noUpdatesAlert.initOwner(mainReference.getPrimaryStage());
+                    noUpdatesAlert.setHeaderText(null);
+                    noUpdatesAlert.setTitle("Warning!");
+                    noUpdatesAlert.setContentText(
+                            "Some builds failed to download properly, this is usually because "
+                                    + "they are still listed on the website, but are actually removed.");
+                    noUpdatesAlert.showAndWait();
+                }
+
                 BuildDataManager.updateLastUpdatedDate();
                 BuildDataManager.saveBuilds();
 

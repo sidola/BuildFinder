@@ -206,27 +206,30 @@ public class BuildFinder extends Application {
         statusBarProgressBar.hide();
 
         // Setup a menu bar
-        MenuItem preferencesItem = new MenuItem("Preferences");        
+        MenuItem preferencesItem = new MenuItem("Preferences");
         MenuItem exitItem = new MenuItem("Exit");
-        
+
         MenuItem aboutItem = new MenuItem("About");
-        MenuItem updateItem = new MenuItem("Check for update");        
+        MenuItem updateItem = new MenuItem("Check for update");
         MenuItem diabloBuildsLinkItem = new MenuItem("Open diablobuilds.com");
 
         Menu fileMenu = new Menu("File");
         Menu helpMenu = new Menu("Help");
 
         fileMenu.getItems().addAll(preferencesItem, exitItem);
-        helpMenu.getItems().addAll(updateItem, aboutItem, new SeparatorMenuItem(), diabloBuildsLinkItem);
+        helpMenu.getItems().addAll(updateItem, aboutItem, new SeparatorMenuItem(),
+                diabloBuildsLinkItem);
 
         MenuBar menuBar = new MenuBar(fileMenu, helpMenu);
 
         preferencesItem.setOnAction(e -> showPreferencesDialog());
-        preferencesItem.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
-        
+        preferencesItem.setAccelerator(
+                new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
+
         exitItem.setOnAction(e -> System.exit(0));
-        exitItem.setAccelerator(new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
-        
+        exitItem.setAccelerator(
+                new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
+
         aboutItem.setOnAction(e -> showAboutDialog());
         updateItem.setOnAction(e -> manualUpdateCheck());
         diabloBuildsLinkItem.setOnAction(e -> openDiabloBuildsWebsite());
@@ -246,7 +249,7 @@ public class BuildFinder extends Application {
         // Bind CTRL+F key-combo to search
         final KeyCodeCombination focusFilterFieldCombo = new KeyCodeCombination(KeyCode.F,
                 KeyCombination.CONTROL_DOWN);
-        
+
         scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
             if (focusFilterFieldCombo.match(event)) {
                 mainController.focusFilterField();
@@ -257,15 +260,16 @@ public class BuildFinder extends Application {
 
         // Bind DOWN from search to the item list
         scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            
-            if (event.getCode().equals(KeyCode.DOWN) && mainController.isFilterFieldFocused()) {
+
+            if (event.getCode().equals(KeyCode.DOWN)
+                    && mainController.isFilterFieldFocused()) {
                 mainController.focusItemFilterList();
                 event.consume();
                 return;
             }
-            
+
         });
-        
+
         return scene;
     }
 
@@ -314,7 +318,7 @@ public class BuildFinder extends Application {
         preferencesDialog.sizeToScene();
         preferencesDialog.initModality(Modality.APPLICATION_MODAL);
         preferencesDialog.initOwner(primaryStage);
-        
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/PreferencesDialogView.fxml"));
@@ -326,16 +330,16 @@ public class BuildFinder extends Application {
             controller.updateView();
 
             Scene preferencesScene = new Scene(loader.getRoot());
-            
+
             preferencesScene.setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ESCAPE) {
                     closePreferencesDialog();
                 }
             });
-            
+
             String css = getClass().getResource("/master.css").toExternalForm();
             preferencesScene.getStylesheets().add(css);
-            
+
             preferencesDialog.setScene(preferencesScene);
             preferencesDialog.showAndWait();
         } catch (IOException e) {
@@ -354,7 +358,7 @@ public class BuildFinder extends Application {
 
     private void checkForUpdates(boolean automaticUpdate) {
         Task<Optional<String>> updateTask = new UpdateTask();
-        
+
         updateTask.addEventHandler(WorkerStateEvent.WORKER_STATE_FAILED, e -> {
             ExceptionDialog exceptionDialog = new ExceptionDialog(AlertType.ERROR,
                     "An exception occured.", e.getSource().getException());
@@ -362,7 +366,7 @@ public class BuildFinder extends Application {
             exceptionDialog.initOwner(primaryStage);
             exceptionDialog.showAndWait();
         });
-        
+
         updateTask.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, e -> {
             Optional<String> updateRequired = updateTask.getValue();
 

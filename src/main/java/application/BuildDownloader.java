@@ -32,7 +32,7 @@ public class BuildDownloader {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private BlockingQueue<BuildInfo> workQueue;
-    private BlockingQueue<Pair<BuildInfo, Document>> resultQueue;
+    private BlockingQueue<ResultItem<Pair<BuildInfo, Document>>> resultQueue;
 
     private final int workLoad;
     private volatile int workDone = 0;
@@ -84,7 +84,7 @@ public class BuildDownloader {
      * Returns an entry from the internal queue of finished work. Blocks if the
      * internal queue is empty.
      */
-    public Pair<BuildInfo, Document> getResult() {
+    public ResultItem<Pair<BuildInfo, Document>> getResult() {
         try {
             return resultQueue.take();
         } catch (InterruptedException e) {
@@ -129,7 +129,7 @@ public class BuildDownloader {
         // ----------------------------------------------
 
         private final BlockingQueue<BuildInfo> workQueue;
-        private BlockingQueue<Pair<BuildInfo, Document>> resultQueue;
+        private BlockingQueue<ResultItem<Pair<BuildInfo, Document>>> resultQueue;
 
         // ----------------------------------------------
         //
@@ -138,7 +138,7 @@ public class BuildDownloader {
         // ----------------------------------------------
 
         public Worker(BlockingQueue<BuildInfo> workQueue,
-                BlockingQueue<Pair<BuildInfo, Document>> resultQueue) {
+                BlockingQueue<ResultItem<Pair<BuildInfo, Document>>> resultQueue) {
             this.workQueue = workQueue;
             this.resultQueue = resultQueue;
         }
@@ -153,22 +153,36 @@ public class BuildDownloader {
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
 
+                BuildInfo buildInfo = null;
+
                 try {
-
-                    BuildInfo buildInfo = workQueue.take();
-                    String html = downloadHtml(buildInfo.getBuildUrl());
-
-                    resultQueue.put(new Pair<BuildInfo, Document>(buildInfo,
-                            Jsoup.parse(html.toString())));
+                    buildInfo = workQueue.take();
+                } catch (InterruptedException e) {
+                    resultQueue.add(new ResultItem<>(e));
 
                     workDone++;
-
-                } catch (Exception e) {
-                    // FIXME: What do we actually want to do here?
-
-                    // System.err.println(e);
-                    // PARENT_THREAD.interrupt();
+                    continue;
                 }
+
+                try {
+
+                    String html = downloadHtml(buildInfo.getBuildUrl());
+
+                    Pair<BuildInfo, Document> result = new Pair<BuildInfo, Document>(
+                            buildInfo, Jsoup.parse(html.toString()));
+
+                    resultQueue.add(new ResultItem<>(result));
+
+                } catch (IOException e) {
+
+                    Pair<BuildInfo, Document> result = new Pair<BuildInfo, Document>(
+                            buildInfo, null);
+
+                    resultQueue.add(new ResultItem<Pair<BuildInfo, Document>>(result, e));
+
+                }
+
+                workDone++;
 
             }
         }

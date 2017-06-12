@@ -201,6 +201,20 @@ public final class MainController {
         itemFilterField.requestFocus();
     }
 
+    /**
+     * Returns true if the filter field is in focus.
+     */
+    public boolean isFilterFieldFocused() {
+        return itemFilterField.isFocused();
+    }
+
+    /**
+     * Sets focus on the item list.
+     */
+    public void focusItemFilterList() {
+        itemFilterListView.requestFocus();
+    }
+    
     // ----------------------------------------------
     //
     // Private API

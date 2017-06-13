@@ -211,14 +211,14 @@ public class BuildFinder extends Application {
 
         MenuItem aboutItem = new MenuItem("About");
         MenuItem updateItem = new MenuItem("Check for update");
-        MenuItem diabloBuildsLinkItem = new MenuItem("Open diablobuilds.com");
+        MenuItem buildsWebsiteLinkItem = new MenuItem("Open diablofans.com...");
 
         Menu fileMenu = new Menu("File");
         Menu helpMenu = new Menu("Help");
 
         fileMenu.getItems().addAll(preferencesItem, exitItem);
         helpMenu.getItems().addAll(updateItem, aboutItem, new SeparatorMenuItem(),
-                diabloBuildsLinkItem);
+                buildsWebsiteLinkItem);
 
         MenuBar menuBar = new MenuBar(fileMenu, helpMenu);
 
@@ -232,7 +232,7 @@ public class BuildFinder extends Application {
 
         aboutItem.setOnAction(e -> showAboutDialog());
         updateItem.setOnAction(e -> manualUpdateCheck());
-        diabloBuildsLinkItem.setOnAction(e -> openDiabloBuildsWebsite());
+        buildsWebsiteLinkItem.setOnAction(e -> openDiabloBuildsWebsite());
 
         // Setup BorderPane
         BorderPane borderPane = new BorderPane();

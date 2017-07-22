@@ -7,7 +7,6 @@ Akarat's Awakening
 Akkhan's Addendum
 Akkhan's Leniency
 Akkhan's Manacles
-Alabaster Gloves
 Ambo's Pride
 Ancestors' Grace
 Ancient Parthan Defenders
@@ -91,9 +90,12 @@ Blind Faith
 Blitzbolter
 Blood Brother
 Blood-Magic Edge
+Bloodsong Mail
+Bloodtide Blade
 Board Walkers
 Boj Anglers
 Bombardier's Rucksack
+Bone Ringer
 Boneshatter
 Boots of Disregard
 Born for War All
@@ -112,7 +114,10 @@ Bracer of Fury
 Bracers of Destruction
 Bracers of the First Men
 Breastplate of Akkhan
+Briggs' Wrath
+Broken Crown
 Broken Promises
+Bryner's Journey
 Bul-Kathos's Sacred Charge
 Bul-Kathos's Solemn Vow
 Bul-Kathos's Tribal Guardian
@@ -154,11 +159,13 @@ Chantodo's Will
 Chilanik's Chain
 Cinder Switch
 Cindercoat
+Circle of Nailuj's Evol
 Cloak of Deception
 Cluckeye
 Coils of the First Spider
 Convention of Elements
 Cord of the Sherma
+Corpsewhisper Pauldrons
 Corrupted Ashbringer
 Corruption
 Cosmic Strand
@@ -181,15 +188,16 @@ Dark Mage's Shade
 Darklight
 Dashing Pauldrons of Despair
 Dawn
+Dayntee's Binding
 Dead Man's Legacy
 Deadly Rebirth
-Death Mask
 Death Watch Mantle
 Death's Bargain
 Deathreach
 Deathseer's Cowl
 Deathwish
 Defender of Westmarch
+Defiler Cuisses
 Demon Claw
 Demon Machine
 Demon's Aileron
@@ -229,6 +237,7 @@ Eye of Peshkov
 Eyes of the Earth
 Faithful Memory
 Fate of the Fell
+Fate's Vow
 Fazula's Improbable Chain
 Fiendish Grips
 Fierce Gauntlets
@@ -257,10 +266,10 @@ Foundation of the Light
 Foushee Voulge
 Fragment of Destiny
 Freeze of Deflection
-Frostburn
 Frostburn Gauntlets
 Frydehr's Wrath
 Fulminator
+Funerary Pick
 Fury of the Ancients
 Fury of the Vanished Peak
 Gabriel's Vambraces
@@ -280,6 +289,8 @@ Golden Gorget of Leoric
 Golden Scourge
 Goldskin
 Goldwrap
+Golemskin Breeches
+Grasps of Essence
 Grim Reaper
 Griswold's Perfection
 Griswold's Worn Edge
@@ -317,7 +328,9 @@ Hammer Jammers
 Harness of Truth
 Harrington Waistguard
 Haunt of Vaxo
+Haunted Visions
 Haunting Girdle
+Heart of Darkness
 Heart of Iron
 Heart of the Crashing Wave
 Heart of the Light
@@ -364,9 +377,14 @@ Immortal King's Tribal Binding
 Immortal King's Triumph
 Immortal King's Will
 In-geom
+Inarius's Conviction
+Inarius's Martyrdom
+Inarius's Perseverance
+Inarius's Reticence
+Inarius's Understanding
+Inarius's Will
 Incense Torch of the Grand Temple
 Incinerator
-Infernal Pauldrons
 Inna's Blessing
 Inna's Favor
 Inna's Glory
@@ -381,6 +399,7 @@ Inna's Temperance
 Inna's Vast Expanse
 Insatiable Belt
 Inviolable Faith
+Iron Rose
 Irontoe Mudsputters
 Ivory Tower
 Izzuccob
@@ -395,6 +414,8 @@ Jang's Envelopment
 Jawbreaker
 Jekangbord
 Jeram's Bracers
+Jesseth Skullscythe
+Jesseth Skullshield
 Johanna's Argument
 Justice Lantern
 Justinian's Mercy
@@ -409,6 +430,7 @@ Krede's Flame
 Krelm's Buff Belt
 Krelm's Buff Bracers
 Kridershot
+Krysbin's Sentence
 Kymbo's Gold
 Kyoshiro's Blade
 Kyoshiro's Soul
@@ -419,6 +441,7 @@ Lamentation
 Last Breath
 Lefebvre's Soliloquy
 Leg Guards of Mystery
+Leger's Disdain
 Leonine Bow of Hashir
 Leoric's Crown
 Leoric's Signet
@@ -432,12 +455,15 @@ Little Rogue
 Living Umbral Oath
 Logan's Claw
 Lord Greenstone's Fan
+Lornelle's Sunstone
+Lost Time
 Lut Socks
 Mad Monarch's Scepter
 Madawc's Sorrow
 Madstone
 Magefist
 Maloth's Focus
+Maltorius' Petrified Spike
 Manajuma's Carving Knife
 Manajuma's Gory Fetch
 Manajuma's Ritual Cutter
@@ -456,6 +482,7 @@ Marauder's Treads
 Marauder's Visage
 Mark of The Magi
 Mask of Jeram
+Mask of Scarlet Death
 Mask of the Searing Sky
 Maximus
 Mempo of Twilight
@@ -466,8 +493,8 @@ Monster Hunter
 Moon Slayer
 Moonlight Ward
 Mordullu's Promise
+Moribund Gauntlets
 Mortal Coil
-Mortick's Brace
 Mountain of the Light
 Myken's Ball of Hate
 Nagelring
@@ -484,6 +511,7 @@ Natalya's Sight
 Natalya's Slayer
 Natalya's Soul
 Natalya's Touch
+Nayr's Black Death
 Neanderthal
 Nemesis Bracers
 Night's Reaping
@@ -504,6 +532,12 @@ Pauldrons of Akkhan
 Pauldrons of the Skeleton King
 Pauldrons of the Wastes
 Penders Purchase
+Pestilence Battle Boots
+Pestilence Defense
+Pestilence Gloves
+Pestilence Incantations
+Pestilence Mask
+Pestilence Robe
 Pig Sticker
 Pinto's Pride
 Piro Marella
@@ -513,7 +547,6 @@ Pride of Cassius
 Pride of the Invoker
 Pride's Fall
 Primordial Soul
-Profane Pauldrons
 Promise of Glory
 Pull of the Earth
 Pus Spitter
@@ -531,11 +564,20 @@ Rakanishu's Blade
 Rakoff's Glass of Life
 Rancor
 Ranslor's Folly
+Rathma's Macabre Vambraces
+Rathma's Ossified Sabatons
+Rathma's Ribcage Plate
+Rathma's Skeletal Legplates
+Rathma's Skull Helm
+Rathma's Spikes
+Razeth's Volition
 Razor Strop
 Reaper's Wraps
 Rechel's Ring of Larceny
+Reilena's Shadowhook
 Remorseless
 Renewal of the Invoker
+Requiem Cereplate
 Restraint
 Rhen'ho Flayer
 Rimeheart
@@ -572,7 +614,7 @@ Schaefer's Hammer
 Scourge
 Screaming Chain
 Scrimshaw
-Sean's Ring of Testing
+Scythe of the Cycle
 Sebor's Nightmare
 See No Evil
 Serpent's Sparker
@@ -594,7 +636,6 @@ Shield of the Steed
 Shrouded Mask
 Shukrani's Triumph
 Signet Ring of the Blizzard
-Signet Ring of the Blizzard  
 Silver Star Piercers
 Sin Seekers
 Skelon's Deceit
@@ -605,7 +646,6 @@ Skull of Resonance
 Sky Splitter
 Skycutter
 Skywarden
-Slave Bonds
 Sledge Fist
 Sledge of Athskeleng
 Slorak's Madness
@@ -613,6 +653,7 @@ Solanium
 Sorrowful Countenance
 Soulsmasher
 Spaulders of Zakara
+Spear of Jairo
 Spectrum
 Spines of Seething Hatred
 Spires of the Earth
@@ -631,7 +672,7 @@ Stalgard's Decimator
 Standoff
 Starfire
 Starmetal Kukri
-Steady Strikers
+Steuart's Greaves
 Stolen Ring
 Stone Gauntlets
 Stone of Jordan
@@ -671,7 +712,7 @@ Talisman of Aranoch
 Tasker and Theo
 Tasset of the Wastes
 Telranden's Hand
-TEMP Channeling Ring 
+TEMP Channeling Ring
 The Ancient Bonesaber of Zumakalis
 The Barber
 The Broken Staff
@@ -700,12 +741,12 @@ The Grin Reaper
 The Helm of Rule
 The Horadric Hamburger
 The Inquisitor
+The Johnstone
 The Laws of Seph
 The Magistrate
 The Marauder
 The Mind's Eye
 The Mortal Drama
-The Murlocket
 The Ninth Cirri Satchel
 The Oculus
 The Paddle
@@ -740,6 +781,13 @@ Thundergod's Vigor
 Tiklandian Visage
 Towers of the Light
 Trag'Oul Coils
+Trag'Oul's Claws
+Trag'Oul's Corroded Fang
+Trag'Oul's Guise
+Trag'Oul's Heart
+Trag'Oul's Hide
+Trag'Oul's Scales
+Trag'Oul's Stalwart Greaves
 Triumvirate
 Tyrael's Might
 Tzo Krin's Gaze
@@ -792,6 +840,7 @@ Will of the Light
 Windforce
 Winter Flurry
 Wirt's Original Leg
+Wisdom of Kalan
 Wizardspike
 Wodir Harness
 Wojahnni Assaulter

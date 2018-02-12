@@ -46,7 +46,10 @@ public class BuildInfo implements Serializable {
         this.buildScore = score;
 
         try {
+            
+            urlString = urlString.replaceFirst("^http", "https");
             this.buildUrl = new URL(urlString);
+            
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

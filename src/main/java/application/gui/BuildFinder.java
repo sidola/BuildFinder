@@ -2,6 +2,7 @@ package application.gui;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.controlsfx.control.StatusBar;
 
 import application.BuildDataManager;
 import application.UpdateTask;
+import application.config.ColumnStateMarshaller;
 import application.config.UserPreferences;
 import application.config.UserPreferences.PrefKey;
 import application.graphics.IconImage;
@@ -19,6 +21,7 @@ import application.gui.controller.MainController;
 import application.gui.controller.PreferencesDialogController;
 import application.gui.controller.SetupDialogController;
 import application.gui.controller.UpdateDialogController;
+import application.gui.model.BuildTableColumnState;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -37,11 +40,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * Main application class.
- * 
- * @author Sid Botvin
  */
 public class BuildFinder extends Application {
 
@@ -190,9 +192,42 @@ public class BuildFinder extends Application {
 
         primaryStage.setScene(createMainScene());
 
-        primaryStage.setWidth(900);
+        int width = UserPreferences.getIntegerOrDefault(PrefKey.WINDOW_WIDTH, 900);
+        int height = UserPreferences.getIntegerOrDefault(PrefKey.WINDOW_HEIGHT, 550);
+                
+        boolean maximized = UserPreferences.getBooleanOrDefault(PrefKey.WINDOW_MAXIMIZED,
+                false);
+
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
+        primaryStage.setMaximized(maximized);
+        
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(350);
+
+        primaryStage.setOnCloseRequest(this::OnCloseRequest);
+    }
+
+    private void OnCloseRequest(WindowEvent event) {
+        // TODO: How do we figure out which screen we're on?
+
+        List<BuildTableColumnState> columnStates = mainController.getColumnStates();
+        String columnInfo = ColumnStateMarshaller.marshallToString(columnStates);
+        
+        UserPreferences.set(PrefKey.COLUMN_INFO, columnInfo);
+
+        String windowHeight = Integer.toString((int) primaryStage.getHeight());
+        String windowWidht = Integer.toString((int) primaryStage.getWidth());
+        String windowMaximized = Boolean.toString(primaryStage.isMaximized());
+
+        // If we're maximized, we'll keep whatever values we
+        // had last time, otherwise we get a nasty big window
+        if (primaryStage.isMaximized() == false) {
+            UserPreferences.set(PrefKey.WINDOW_HEIGHT, windowHeight);
+            UserPreferences.set(PrefKey.WINDOW_WIDTH, windowWidht);
+        }
+
+        UserPreferences.set(PrefKey.WINDOW_MAXIMIZED, windowMaximized);
     }
 
     /**
@@ -298,7 +333,6 @@ public class BuildFinder extends Application {
 
             AboutDialogController controller = loader.getController();
             controller.setMainReference(this);
-            controller.setOwnerStage(aboutDialog);
 
             Scene aboutScene = new Scene(loader.getRoot());
             aboutDialog.setScene(aboutScene);
@@ -438,7 +472,6 @@ public class BuildFinder extends Application {
 
             UpdateDialogController controller = loader.getController();
             controller.setMainReference(this);
-            controller.setOwnerStage(updateDialog);
             controller.setChangelog(changelog);
             controller.isAutomaticUpdate(automaticUpdate);
 

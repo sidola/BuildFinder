@@ -2,8 +2,6 @@ package application.model;
 
 /**
  * Defines all available classes.
- * 
- * @author Sid Botvin
  */
 public enum D3Class {
 

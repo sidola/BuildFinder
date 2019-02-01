@@ -35,7 +35,6 @@ public class UpdateDialogController {
     // ----------------------------------------------
 
     private BuildFinder mainReference;
-    private Stage ownerStage;
     private boolean automaticUpdate;
 
     // ----------------------------------------------
@@ -59,10 +58,6 @@ public class UpdateDialogController {
 
     public void setMainReference(BuildFinder mainReference) {
         this.mainReference = mainReference;
-    }
-
-    public void setOwnerStage(Stage ownerStage) {
-        this.ownerStage = ownerStage;
     }
 
     // ----------------------------------------------

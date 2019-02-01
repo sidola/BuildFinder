@@ -6,8 +6,6 @@ import javafx.scene.image.ImageView;
 /**
  * Provides {@link Image} and {@link ImageView} instances of icons used by the
  * application.
- * 
- * @author Sid Botvin
  */
 public enum IconImage {
 

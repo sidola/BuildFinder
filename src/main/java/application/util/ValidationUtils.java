@@ -6,8 +6,6 @@ import javafx.scene.Node;
 
 /**
  * This class helps with validation decoration for FX elements.
- * 
- * @author Sid Botvin
  */
 public class ValidationUtils {
 

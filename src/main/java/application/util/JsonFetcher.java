@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
 
 /**
  * Utility class to fetch JSON data.
- * 
- * @author Sid Botvin
  */
 public class JsonFetcher {
 

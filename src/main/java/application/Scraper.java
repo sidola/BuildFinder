@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,8 +29,6 @@ import javafx.util.Pair;
 
 /**
  * Takes care of scraping HTML information and extracting the relevant data.
- * 
- * @author Sid Botvin
  */
 public final class Scraper extends Task<Boolean> {
 
@@ -232,6 +231,12 @@ public final class Scraper extends Task<Boolean> {
             return buildSet;
         }
 
+        // Let's check if we've been interrupted, do this before initializing a
+        // BuildDownloader since that spawns a bunch more threads
+        if (Thread.interrupted()) {
+            return null;
+        }
+
         buildDownloader = new BuildDownloader(THREAD_COUNT, buildSet.size());
 
         for (BuildInfo buildInfo : buildSet) {
@@ -288,6 +293,10 @@ public final class Scraper extends Task<Boolean> {
      * any that are already downloaded and up to date. Then returns a new set of
      * the items that were taken out.
      * 
+     * NOTICE: This method is expected to run on a really small subset of the
+     * total data that will eventually be available in BuildInfo, specifically
+     * we only have access to "lastUpdated" and "score".
+     * 
      * @param buildSet
      *            The {@link BuildInfo} set to check for already stored builds.
      * 
@@ -298,20 +307,31 @@ public final class Scraper extends Task<Boolean> {
         Set<BuildInfo> cachedBuilds = new HashSet<>();
 
         Iterator<BuildInfo> currentInfoIterator = buildSet.iterator();
+
         while (currentInfoIterator.hasNext()) {
             BuildInfo currentBuildInfo = currentInfoIterator.next();
-
             boolean buildRemoved = false;
 
             // Remove any builds we had before we started the fetch
             Iterator<BuildInfo> oldInfoIterator = buildInfoSet.iterator();
+
             while (oldInfoIterator.hasNext()) {
                 BuildInfo oldBuildInfo = oldInfoIterator.next();
 
-                if (currentBuildInfo.equals(oldBuildInfo) && currentBuildInfo
-                        .getBuildLastUpdated() == oldBuildInfo.getBuildLastUpdated()) {
+                // Update any build that are missing these fields, they were
+                // added in a later version
+                if (oldBuildInfo.getAuthor().isEmpty()
+                        || oldBuildInfo.getPatch().isEmpty()) {
 
-                    // Only update the score for the old build
+                    break;
+                }
+
+                boolean buildIsUpToDate = currentBuildInfo.equals(oldBuildInfo)
+                        && currentBuildInfo.getBuildLastUpdated() == oldBuildInfo
+                                .getBuildLastUpdated();
+
+                // If the build is up to date, we'll only update a few fields
+                if (buildIsUpToDate) {
                     if (currentBuildInfo.getBuildScore() != oldBuildInfo
                             .getBuildScore()) {
                         oldBuildInfo.setBuildScore(currentBuildInfo.getBuildScore());
@@ -322,7 +342,6 @@ public final class Scraper extends Task<Boolean> {
 
                     buildRemoved = true;
                     break;
-
                 }
             }
 
@@ -354,10 +373,26 @@ public final class Scraper extends Task<Boolean> {
         List<BuildInfo> favoriteBuilds = new ArrayList<>(
                 BuildDataManager.getFavoriteBuilds());
 
+        // These builds are no longer part of the builds we have URLs for, so
+        // we'll never update them naturally
+        Set<BuildInfo> lostFavoriteBuilds = new HashSet<>();
+
+        favoriteBuilds.forEach(favBuild -> {
+            Optional<BuildInfo> newFavBuild = newBuildInfoSet.stream()
+                    .filter(b -> b.equals(favBuild)).findFirst();
+
+            if (newFavBuild.isPresent()) {
+                newFavBuild.get().setFavorite(true);
+            } else {
+                lostFavoriteBuilds.add(favBuild);
+            }
+        });
+
         buildInfoSet.clear();
         buildInfoSet.addAll(newBuildInfoSet);
-        buildInfoSet.removeAll(favoriteBuilds);
-        buildInfoSet.addAll(favoriteBuilds);
+
+        // buildInfoSet.removeAll(favoriteBuilds);
+        // buildInfoSet.addAll(favoriteBuilds);
 
         updateProgress(1, 1);
         showStatusBarMessage("Done!", 500);
@@ -497,6 +532,18 @@ public final class Scraper extends Task<Boolean> {
 
         buildInfo.setBuildName(buildName);
         buildInfo.setBuildGear(buildGear);
+
+        String author = getRawText(document
+                .select("#content > section > div.build-detail > div.build-byline > a"));
+
+        buildInfo.setAuthor(author);
+
+        String patch = getRawText(document.select(
+                "#content > section > div.build-detail > div.build-byline > span"));
+
+        // Format is: Patch X.Y.Z, we don't want the "Patch " part.
+        patch = patch.substring(6);
+        buildInfo.setPatch(patch);
     }
 
     /**

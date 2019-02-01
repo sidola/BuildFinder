@@ -14,8 +14,6 @@ import application.model.D3Class;
 
 /**
  * Util class to help parse a builds URL and extract the options in it.
- * 
- * @author Sid Botvin
  */
 public class BuildUrlParser {
 

@@ -2,8 +2,6 @@ package application;
 
 /**
  * Holds a result created by a separate thread.
- * 
- * @author Sid Botvin
  *
  * @param <T>
  *            The type of the result object.

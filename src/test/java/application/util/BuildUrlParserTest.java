@@ -3,10 +3,6 @@ package application.util;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.plaf.ButtonUI;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

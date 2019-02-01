@@ -19,8 +19,6 @@ import application.model.D3Class;
 /**
  * Data manager class for the build data. Handles saving, loading and provides
  * the application with methods to search for builds containing certain items.
- * 
- * @author Sid Botvin
  */
 public final class BuildDataManager {
 

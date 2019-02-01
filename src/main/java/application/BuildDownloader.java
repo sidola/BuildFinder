@@ -8,6 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,8 +19,6 @@ import javafx.util.Pair;
 /**
  * Responsible for running several threads that download data about the builds
  * we're processing.
- * 
- * @author Sid Botvin
  */
 public class BuildDownloader {
 
@@ -29,7 +28,7 @@ public class BuildDownloader {
     //
     // ----------------------------------------------
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService;
 
     private BlockingQueue<BuildInfo> workQueue;
     private BlockingQueue<ResultItem<Pair<BuildInfo, Document>>> resultQueue;
@@ -54,6 +53,14 @@ public class BuildDownloader {
      */
     public BuildDownloader(int numOfWorkers, int workLoad) {
         this.workLoad = workLoad;
+        
+        executorService = Executors.newFixedThreadPool(numOfWorkers, new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
 
         workQueue = new ArrayBlockingQueue<>(workLoad);
         resultQueue = new ArrayBlockingQueue<>(workLoad);
@@ -139,6 +146,7 @@ public class BuildDownloader {
 
         public Worker(BlockingQueue<BuildInfo> workQueue,
                 BlockingQueue<ResultItem<Pair<BuildInfo, Document>>> resultQueue) {
+
             this.workQueue = workQueue;
             this.resultQueue = resultQueue;
         }
@@ -151,17 +159,16 @@ public class BuildDownloader {
 
         @Override
         public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
 
+            while (!Thread.currentThread().isInterrupted()) {
                 BuildInfo buildInfo = null;
 
                 try {
                     buildInfo = workQueue.take();
                 } catch (InterruptedException e) {
-                    resultQueue.add(new ResultItem<>(e));
-
-                    workDone++;
-                    continue;
+                    // This means we got interrupted by the Executor, time to
+                    // return and stop ourselves
+                    return;
                 }
 
                 try {
@@ -183,7 +190,6 @@ public class BuildDownloader {
                 }
 
                 workDone++;
-
             }
         }
 

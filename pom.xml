@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>com.eclipsesource.minimal-json</groupId>
 			<artifactId>minimal-json</artifactId>
-			<version>0.9.4</version>
+			<version>0.9.5</version>
 		</dependency>
 
 	</dependencies>
@@ -58,6 +58,7 @@
 				<configuration>
 					<!-- See: http://maven.apache.org/plugins/maven-shade-plugin/index.html -->
 					<dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+					<minimizeJar>true</minimizeJar>
 
 					<transformers>
 						<transformer

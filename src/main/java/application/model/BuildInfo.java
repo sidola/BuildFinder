@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -28,7 +27,12 @@ public class BuildInfo implements Serializable {
     private D3Class d3Class;
 
     private transient BooleanProperty isFavoriteProperty = new SimpleBooleanProperty();
+
+    // Transient because they've been added to the serialization
+    // after initial release
     private transient int buildUrlId;
+    private transient String author;
+    private transient String patch;
 
     // Epoch time of when this build was last updated
     private transient long buildLastUpdated;
@@ -41,15 +45,16 @@ public class BuildInfo implements Serializable {
     //
     // ----------------------------------------------
 
-    public BuildInfo(D3Class d3Class, String urlString, long buildLastUpdated, int score) {
+    public BuildInfo(D3Class d3Class, String urlString, long buildLastUpdated,
+            int score) {
         this.d3Class = d3Class;
         this.buildScore = score;
 
         try {
-            
+
             urlString = urlString.replaceFirst("^http", "https");
             this.buildUrl = new URL(urlString);
-            
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -71,9 +76,10 @@ public class BuildInfo implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Name: %s\nScore: %d\nClass: %s\nURL: %s\n-----\nGear:\n%s",
-                buildName, buildScore, d3Class, buildUrl.toString(),
-                buildGear.toString());
+        return String.format(
+                "Name: %sAuthor: %s\nPatch: %s\nUpdated: %s\nScore: %d\nClass: %s\nURL: %s\n-----\nGear:\n%s",
+                buildName, author, patch, buildLastUpdated, buildScore, d3Class,
+                buildUrl.toString(), buildGear.toString());
     }
 
     // ----------------------------------------------
@@ -148,6 +154,8 @@ public class BuildInfo implements Serializable {
         s.writeBoolean(isFavoriteProperty.get());
         s.writeInt(buildUrlId);
         s.writeLong(buildLastUpdated);
+        s.writeUTF(author);
+        s.writeUTF(patch);
     }
 
     private void readObject(ObjectInputStream s)
@@ -169,6 +177,18 @@ public class BuildInfo implements Serializable {
             // No last update date was found, this was an old config
             // We'll just ignore it, it'll fix itself on next update
         }
+
+        try {
+            author = s.readUTF();
+        } catch (EOFException e) {
+            author = "";
+        }
+
+        try {
+            patch = s.readUTF();
+        } catch (EOFException e) {
+            patch = "";
+        }
     }
 
     // ----------------------------------------------
@@ -176,6 +196,22 @@ public class BuildInfo implements Serializable {
     // Getters & Setters
     //
     // ----------------------------------------------
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setPatch(String patch) {
+        this.patch = patch;
+    }
+
+    public String getPatch() {
+        return patch;
+    }
 
     public String getBuildName() {
         return buildName;

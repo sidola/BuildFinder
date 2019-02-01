@@ -5,7 +5,6 @@ import application.gui.BuildFinder;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
 public class AboutDialogController {
 
@@ -27,7 +26,6 @@ public class AboutDialogController {
     // ----------------------------------------------
 
     private BuildFinder mainReference;
-    private Stage ownerStage;
 
     // ----------------------------------------------
     //
@@ -51,11 +49,6 @@ public class AboutDialogController {
 
     public void setMainReference(BuildFinder mainReference) {
         this.mainReference = mainReference;
-    }
-
-    public void setOwnerStage(Stage ownerStage) {
-        this.ownerStage = ownerStage;
-
     }
 
 }

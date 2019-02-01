@@ -4,16 +4,32 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import application.BuildDataManager;
 import application.Scraper;
+import application.config.ColumnStateMarshaller;
+import application.config.UserPreferences;
+import application.config.UserPreferences.PrefKey;
 import application.gui.BuildFinder;
 import application.gui.component.ExceptionDialog;
 import application.gui.component.StatusBarProgressBar;
+import application.gui.model.BuildTableColumn;
+import application.gui.model.BuildTableColumnState;
 import application.model.BuildInfo;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -52,8 +68,6 @@ import javafx.scene.layout.VBox;
 
 /**
  * Controller class for the main view.
- * 
- * @author Sid Botvin
  */
 public final class MainController {
 
@@ -71,11 +85,25 @@ public final class MainController {
     private ListView<String> itemFilterListView = new ListView<>();
 
     private TableView<BuildInfo> buildTableView = new TableView<>();
-    private TableColumn<BuildInfo, Integer> scoreColumn = new TableColumn<>("Score");
-    private TableColumn<BuildInfo, String> classColumn = new TableColumn<>("Class");
-    private TableColumn<BuildInfo, Boolean> isCubedColumn = new TableColumn<>("In cube");
-    private TableColumn<BuildInfo, BuildInfo> nameColumn = new TableColumn<>("Name");
-    private TableColumn<BuildInfo, Hyperlink> urlColumn = new TableColumn<>("Link");
+
+    private TableColumn<BuildInfo, Integer> scoreColumn = new TableColumn<>(
+            BuildTableColumn.SCORE.name);
+    private TableColumn<BuildInfo, String> classColumn = new TableColumn<>(
+            BuildTableColumn.CLASS.name);
+    private TableColumn<BuildInfo, Boolean> isCubedColumn = new TableColumn<>(
+            BuildTableColumn.IS_CUBED.name);
+    private TableColumn<BuildInfo, BuildInfo> nameColumn = new TableColumn<>(
+            BuildTableColumn.NAME.name);
+    private TableColumn<BuildInfo, Hyperlink> urlColumn = new TableColumn<>(
+            BuildTableColumn.URL.name);
+    private TableColumn<BuildInfo, Long> lastUpdatedColumn = new TableColumn<>(
+            BuildTableColumn.LAST_UPDATED.name);
+    private TableColumn<BuildInfo, String> authorColumn = new TableColumn<>(
+            BuildTableColumn.AUTHOR.name);
+    private TableColumn<BuildInfo, String> patchColumn = new TableColumn<>(
+            BuildTableColumn.PATCH.name);
+
+    private Map<BuildTableColumn, TableColumn<BuildInfo, ?>> buildTableColumns = new HashMap<>();
 
     private Button updateBuildsButton = new Button("Update builds");
     private Button showFavoriteBuildsButton = new Button("Show favorite builds");
@@ -107,6 +135,15 @@ public final class MainController {
     public MainController(BuildFinder mainReference) {
         this.mainReference = mainReference;
         statusBarProgressBar = mainReference.getStatusBarProgressBar();
+
+        buildTableColumns.put(BuildTableColumn.AUTHOR, authorColumn);
+        buildTableColumns.put(BuildTableColumn.CLASS, classColumn);
+        buildTableColumns.put(BuildTableColumn.IS_CUBED, isCubedColumn);
+        buildTableColumns.put(BuildTableColumn.LAST_UPDATED, lastUpdatedColumn);
+        buildTableColumns.put(BuildTableColumn.URL, urlColumn);
+        buildTableColumns.put(BuildTableColumn.NAME, nameColumn);
+        buildTableColumns.put(BuildTableColumn.PATCH, patchColumn);
+        buildTableColumns.put(BuildTableColumn.SCORE, scoreColumn);
     }
 
     // ----------------------------------------------
@@ -195,6 +232,27 @@ public final class MainController {
     // ----------------------------------------------
 
     /**
+     * Returns the current state of all columns in the table, such as width and
+     * position.
+     */
+    public List<BuildTableColumnState> getColumnStates() {
+        List<BuildTableColumnState> columnStates = new ArrayList<>();
+
+        int index = 0;
+        for (TableColumn<BuildInfo, ?> thisColumn : buildTableView.getColumns()) {
+            BuildTableColumn column = BuildTableColumn.fromName(thisColumn.getText());
+
+            BuildTableColumnState columnState = new BuildTableColumnState(column, index,
+                    thisColumn.getWidth(), thisColumn.isVisible());
+
+            columnStates.add(columnState);
+            index++;
+        }
+
+        return columnStates;
+    }
+
+    /**
      * Sets focus on the filter field.
      */
     public void focusFilterField() {
@@ -214,7 +272,7 @@ public final class MainController {
     public void focusItemFilterList() {
         itemFilterListView.requestFocus();
     }
-    
+
     // ----------------------------------------------
     //
     // Private API
@@ -292,15 +350,19 @@ public final class MainController {
      * Configures the table view used to display builds.
      */
     private void setupBuildTableView() {
+        buildTableView.setTableMenuButtonVisible(true);
 
         buildTableView.setPrefWidth(620);
         buildTableView.setMaxWidth(Double.MAX_VALUE);
         buildTableView.setItems(tableBuildList);
-        buildTableView.getColumns().add(scoreColumn);
-        buildTableView.getColumns().add(classColumn);
-        buildTableView.getColumns().add(isCubedColumn);
-        buildTableView.getColumns().add(urlColumn);
-        buildTableView.getColumns().add(nameColumn);
+
+        String columnStateData = UserPreferences.get(PrefKey.COLUMN_INFO);
+
+        if (columnStateData != null) {
+            setupColumnsFromPreferences(columnStateData);
+        } else {
+            setupColumnsFromDefaults();
+        }
 
         buildTableView.setRowFactory(tableView -> {
             TableRow<BuildInfo> tableRow = new TableRow<>();
@@ -367,6 +429,45 @@ public final class MainController {
         });
 
         // Configure columns
+        authorColumn.setStyle("-fx-alignment: CENTER;");
+        authorColumn.setCellValueFactory(cellData -> {
+            return new ReadOnlyObjectWrapper<String>(cellData.getValue().getAuthor());
+        });
+
+        patchColumn.setStyle("-fx-alignment: CENTER;");
+        patchColumn.setCellValueFactory(cellData -> {
+            return new ReadOnlyObjectWrapper<String>(cellData.getValue().getPatch());
+        });
+
+        lastUpdatedColumn.setStyle("-fx-alignment: CENTER;");
+        lastUpdatedColumn.setCellValueFactory(cellData -> {
+
+            return new ReadOnlyObjectWrapper<Long>(
+                    cellData.getValue().getBuildLastUpdated());
+        });
+
+        lastUpdatedColumn.setCellFactory(tc -> new TableCell<BuildInfo, Long>() {
+            @Override
+            protected void updateItem(Long data, boolean empty) {
+                super.updateItem(data, empty);
+                if (empty) {
+
+                    setText(null);
+
+                } else {
+
+                    Instant instant = Instant.ofEpochSecond(data);
+                    ZonedDateTime dateTime = ZonedDateTime.ofInstant(instant,
+                            ZoneOffset.UTC);
+                    String dateString = dateTime.format(
+                            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+
+                    setText(dateString);
+
+                }
+            }
+        });
+
         scoreColumn.setStyle("-fx-alignment: CENTER;");
         scoreColumn.setCellValueFactory(cellData -> {
             return new ReadOnlyObjectWrapper<Integer>(
@@ -381,7 +482,6 @@ public final class MainController {
 
         isCubedColumn.setStyle("-fx-alignment: CENTER;");
         isCubedColumn.setCellValueFactory(cellData -> {
-
             // This handles the edge-case where user enters a valid item name in
             // the filter box, receives builds, then enters an invalid name
             // filter in the box, then tries to make changes to the items in the
@@ -398,7 +498,6 @@ public final class MainController {
             // 'IsCubed' column will default to 'No'. The behavior we want here
             // is either to completely hide the 'IsCubed' column when we're
             // viewing favorites, or set it to '-', not 'No'.
-
             return new ReadOnlyObjectWrapper<Boolean>(
                     cellData.getValue().getBuildGear().isCubed(itemName));
 
@@ -418,16 +517,42 @@ public final class MainController {
                     createHyperlink("Open", cellData.getValue().getBuildUrl()));
         });
 
-        scoreColumn.prefWidthProperty()
-                .bind(buildTableView.widthProperty().multiply(0.10));
-        classColumn.prefWidthProperty()
-                .bind(buildTableView.widthProperty().multiply(0.15));
-        isCubedColumn.prefWidthProperty()
-                .bind(buildTableView.widthProperty().multiply(0.10));
-        nameColumn.prefWidthProperty()
-                .bind(buildTableView.widthProperty().multiply(0.547));
-        urlColumn.prefWidthProperty().bind(buildTableView.widthProperty().multiply(0.10));
+    }
 
+    private void setupColumnsFromDefaults() {
+        // TODO: This can be simplified again, no dynamic logic in this function
+        Map<BuildTableColumn, Integer> defaultWidths = new LinkedHashMap<>();
+        defaultWidths.put(BuildTableColumn.PATCH, 75);
+        defaultWidths.put(BuildTableColumn.SCORE, 75);
+        defaultWidths.put(BuildTableColumn.CLASS, 100);
+        defaultWidths.put(BuildTableColumn.IS_CUBED, 75);
+        defaultWidths.put(BuildTableColumn.NAME, 300);
+        defaultWidths.put(BuildTableColumn.LAST_UPDATED, 120);
+        defaultWidths.put(BuildTableColumn.AUTHOR, 150);
+
+        for (Entry<BuildTableColumn, Integer> entry : defaultWidths.entrySet()) {
+            TableColumn<BuildInfo, ?> column = buildTableColumns.get(entry.getKey());
+            column.setPrefWidth(entry.getValue());
+
+            buildTableView.getColumns().add(column);
+        }
+    }
+
+    private void setupColumnsFromPreferences(String columnStateData) {
+        List<BuildTableColumnState> columnStates = ColumnStateMarshaller
+                .unmarshallFromString(columnStateData);
+
+        columnStates.sort(Comparator.comparing(BuildTableColumnState::getIndex));
+
+        for (BuildTableColumnState columnState : columnStates) {
+            TableColumn<BuildInfo, ?> tableColumn = buildTableColumns
+                    .get(columnState.getColumn());
+
+            tableColumn.setVisible(columnState.isVisible());
+            tableColumn.setPrefWidth(columnState.getWidth());
+
+            buildTableView.getColumns().add(tableColumn);
+        }
     }
 
     /**

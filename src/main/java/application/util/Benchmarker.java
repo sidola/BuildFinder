@@ -2,8 +2,6 @@ package application.util;
 
 /**
  * Simple utility class to get benchmarks. Does not work with nested calls.
- * 
- * @author Sid Botvin
  */
 public final class Benchmarker {
 

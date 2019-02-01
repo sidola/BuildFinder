@@ -61,11 +61,33 @@ public class UserPreferences {
     }
 
     public static int getInteger(PrefKey preferenceKey) {
-        return Integer.parseInt(PREFERENCES.getProperty(preferenceKey.key));
+        String property = PREFERENCES.getProperty(preferenceKey.key);
+        return Integer.parseInt(property);
+    }
+
+    public static int getIntegerOrDefault(PrefKey preferenceKey, int defaultValue) {
+        String property = PREFERENCES.getProperty(preferenceKey.key);
+
+        if (property == null) {
+            return defaultValue;
+        }
+
+        return Integer.parseInt(property);
     }
 
     public static boolean getBoolean(PrefKey preferenceKey) {
         return Boolean.parseBoolean(PREFERENCES.getProperty(preferenceKey.key));
+    }
+
+    public static boolean getBooleanOrDefault(PrefKey preferenceKey,
+            boolean defaultValue) {
+        String property = PREFERENCES.getProperty(preferenceKey.key);
+
+        if (property == null) {
+            return defaultValue;
+        }
+
+        return Boolean.parseBoolean(property);
     }
 
     public static List<String> getList(PrefKey preferenceKey) {
@@ -102,6 +124,11 @@ public class UserPreferences {
     public enum PrefKey {
 
         // @formatter:off
+        
+        COLUMN_INFO("column_info"),
+        WINDOW_MAXIMIZED("window_maximized"),
+        WINDOW_HEIGHT("window_height"),
+        WINDOW_WIDTH("window_width"),
         
         BUILDS_URL("builds_url"),
         PAGE_COUNT("page_count"),

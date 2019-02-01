@@ -5,8 +5,6 @@ import java.util.List;
 
 /**
  * Math utility methods.
- * 
- * @author Sid Botvin
  */
 public class MathUtil {
 

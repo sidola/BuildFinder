@@ -1,4 +1,6 @@
+
 # BuildFinder
+![](https://img.shields.io/github/commits-since/sidola/buildfinder/latest.svg?style=flat-square)
 
 BuildFinder is an application that helps the user find builds that use a certain item in the game Diablo 3. It scrapes the first page of the most popular builds for each class from [DiabloFans](http://www.diablofans.com/builds) and allows the user to filter the list with a given item.
 

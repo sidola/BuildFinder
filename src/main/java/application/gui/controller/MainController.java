@@ -614,6 +614,11 @@ public final class MainController {
         itemFilterListView.setOnKeyReleased(e -> {
             String selectedItem = itemFilterListView.getSelectionModel()
                     .getSelectedItem();
+            
+            if (selectedItem == null) {
+                selectedItem = itemFilterField.getText();
+            }
+            
             displayBuildsForItem(selectedItem);
         });
 

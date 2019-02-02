@@ -643,8 +643,10 @@ public final class MainController {
         updateBuildsButton.setOnAction(new FetchBuildsHandler(updateBuildsButton));
         showFavoriteBuildsButton.setOnAction(e -> {
             tableBuildList.clear();
+            currentlyFilteredItem = "";
 
             Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
+            
             if (favoriteBuilds.isEmpty()) {
                 buildTableView.setPlaceholder(new Label("No favorite builds found"));
                 return;

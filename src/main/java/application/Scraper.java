@@ -234,7 +234,7 @@ public final class Scraper extends Task<Boolean> {
         // Let's check if we've been interrupted, do this before initializing a
         // BuildDownloader since that spawns a bunch more threads
         if (Thread.interrupted()) {
-            return null;
+            return Collections.emptySet();
         }
 
         buildDownloader = new BuildDownloader(THREAD_COUNT, buildSet.size());
@@ -374,7 +374,8 @@ public final class Scraper extends Task<Boolean> {
                 BuildDataManager.getFavoriteBuilds());
 
         // These builds are no longer part of the builds we have URLs for, so
-        // we'll never update them naturally
+        // we'll never update them naturally, need to make an extra call for
+        // them
         Set<BuildInfo> lostFavoriteBuilds = new HashSet<>();
 
         favoriteBuilds.forEach(favBuild -> {
@@ -388,14 +389,72 @@ public final class Scraper extends Task<Boolean> {
             }
         });
 
+        if (lostFavoriteBuilds.size() >= 1) {
+            showStatusBarMessage("Updating favorites", 500);
+            updateProgress(0, 1);
+
+            updateLostFavoriteBuilds(lostFavoriteBuilds);
+        }
+
         buildInfoSet.clear();
         buildInfoSet.addAll(newBuildInfoSet);
-
-        // buildInfoSet.removeAll(favoriteBuilds);
-        // buildInfoSet.addAll(favoriteBuilds);
+        buildInfoSet.addAll(lostFavoriteBuilds);
 
         updateProgress(1, 1);
         showStatusBarMessage("Done!", 500);
+    }
+
+    /**
+     * Updates any favorite builds that weren't caught in the main update flow.
+     * 
+     * TODO: This method and {@link #getBuilds(String)} are great refactoring
+     * candidates. The download-loop should be more decoupled.
+     */
+    private Set<BuildInfo> updateLostFavoriteBuilds(Set<BuildInfo> lostFavoriteBuilds) {
+        if (Thread.interrupted()) {
+            return Collections.emptySet();
+        }
+
+        buildDownloader = new BuildDownloader(THREAD_COUNT, lostFavoriteBuilds.size());
+        lostFavoriteBuilds.forEach(build -> buildDownloader.queueWork(build));
+
+        long workDone = 1;
+        long totalWork = lostFavoriteBuilds.size();
+        updateProgress(workDone, totalWork);
+
+        while (buildDownloader.hasWork()) {
+            if (isCancelled()) {
+                buildDownloader.cancelWork();
+                break;
+            }
+
+            updateMessage("Updating build " + workDone + " of " + totalWork);
+
+            ResultItem<Pair<BuildInfo, Document>> resultItem = buildDownloader
+                    .getResult();
+
+            if (resultItem.succeeded()) {
+
+                Pair<BuildInfo, Document> buildInfoResult = resultItem.getResult();
+                processBuildInfo(buildInfoResult.getKey(), buildInfoResult.getValue());
+
+            } else {
+
+                Throwable throwable = resultItem.getThrowable();
+
+                if ((throwable instanceof IOException) == false) {
+                    // We only expect IOExceptions here, anything else is
+                    // actually bad
+                    throw new RuntimeException(throwable);
+                }
+
+            }
+
+            updateProgress(workDone, totalWork);
+            workDone++;
+        }
+
+        return lostFavoriteBuilds;
     }
 
     /**

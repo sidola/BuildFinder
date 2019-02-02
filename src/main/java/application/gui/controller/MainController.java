@@ -30,6 +30,7 @@ import application.gui.component.ExceptionDialog;
 import application.gui.component.StatusBarProgressBar;
 import application.gui.model.BuildTableColumn;
 import application.gui.model.BuildTableColumnState;
+import application.gui.model.CubedState;
 import application.model.BuildInfo;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -90,7 +91,7 @@ public final class MainController {
             BuildTableColumn.SCORE.name);
     private TableColumn<BuildInfo, String> classColumn = new TableColumn<>(
             BuildTableColumn.CLASS.name);
-    private TableColumn<BuildInfo, Boolean> isCubedColumn = new TableColumn<>(
+    private TableColumn<BuildInfo, CubedState> isCubedColumn = new TableColumn<>(
             BuildTableColumn.IS_CUBED.name);
     private TableColumn<BuildInfo, BuildInfo> nameColumn = new TableColumn<>(
             BuildTableColumn.NAME.name);
@@ -286,6 +287,10 @@ public final class MainController {
      *            The name of the item to search for.
      */
     private void displayBuildsForItem(String item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item cannot be null");
+        }
+
         if (currentlyFilteredItem.equals(item)) {
             return;
         }
@@ -482,25 +487,22 @@ public final class MainController {
 
         isCubedColumn.setStyle("-fx-alignment: CENTER;");
         isCubedColumn.setCellValueFactory(cellData -> {
-            // This handles the edge-case where user enters a valid item name in
-            // the filter box, receives builds, then enters an invalid name
-            // filter in the box, then tries to make changes to the items in the
-            // table via the context menu.
+            CubedState state = CubedState.NO;
 
-            // In that situation, we'll fall back on the currentlyFilteredItem
-            // instead of getting a fresh item from the list.
-            String itemName = currentlyFilteredItem;
-            if (!itemFilterListView.getSelectionModel().isEmpty()) {
-                itemName = itemFilterListView.getSelectionModel().getSelectedItem();
+            // We wipe this string whenever we click favorites, so an empty
+            // string means we're looking at favorite builds
+            if (currentlyFilteredItem.equals("")) {
+                state = CubedState.FAVORITES;
+            } else {
+                boolean cubed = cellData.getValue().getBuildGear()
+                        .isCubed(currentlyFilteredItem);
+
+                if (cubed) {
+                    state = CubedState.YES;
+                }
             }
 
-            // TODO: When the user views all their favorite builds, the
-            // 'IsCubed' column will default to 'No'. The behavior we want here
-            // is either to completely hide the 'IsCubed' column when we're
-            // viewing favorites, or set it to '-', not 'No'.
-            return new ReadOnlyObjectWrapper<Boolean>(
-                    cellData.getValue().getBuildGear().isCubed(itemName));
-
+            return new ReadOnlyObjectWrapper<CubedState>(state);
         });
 
         isCubedColumn.setCellFactory(c -> new IsCubedTableCell());
@@ -614,11 +616,11 @@ public final class MainController {
         itemFilterListView.setOnKeyReleased(e -> {
             String selectedItem = itemFilterListView.getSelectionModel()
                     .getSelectedItem();
-            
+
             if (selectedItem == null) {
                 selectedItem = itemFilterField.getText();
             }
-            
+
             displayBuildsForItem(selectedItem);
         });
 
@@ -642,11 +644,13 @@ public final class MainController {
 
         updateBuildsButton.setOnAction(new FetchBuildsHandler(updateBuildsButton));
         showFavoriteBuildsButton.setOnAction(e -> {
+
+            itemFilterListView.getSelectionModel().clearSelection();
             tableBuildList.clear();
             currentlyFilteredItem = "";
 
             Set<BuildInfo> favoriteBuilds = BuildDataManager.getFavoriteBuilds();
-            
+
             if (favoriteBuilds.isEmpty()) {
                 buildTableView.setPlaceholder(new Label("No favorite builds found"));
                 return;
@@ -822,7 +826,7 @@ public final class MainController {
     /**
      * Custom {@link TableCell} implementation for the 'IsCubed' column.
      */
-    public class IsCubedTableCell extends TableCell<BuildInfo, Boolean> {
+    public class IsCubedTableCell extends TableCell<BuildInfo, CubedState> {
 
         // ----------------------------------------------
         //
@@ -831,7 +835,7 @@ public final class MainController {
         // ----------------------------------------------
 
         @Override
-        protected void updateItem(Boolean item, boolean empty) {
+        protected void updateItem(CubedState item, boolean empty) {
             super.updateItem(item, empty);
 
             if (empty) {
@@ -840,13 +844,27 @@ public final class MainController {
                 return;
             }
 
-            if (item) {
+            switch (item) {
+
+            case FAVORITES:
+                setText("-");
+                setGraphic(null);
+                break;
+
+            case NO:
+                setText("No");
+                setGraphic(null);
+                break;
+
+            case YES:
                 setText(null);
                 setGraphic(new ImageView(new Image(MainController.class.getClassLoader()
                         .getResourceAsStream("icon/tick.png"))));
-            } else {
-                setText("No");
-                setGraphic(null);
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                        "Unhandled enum value, " + item.toString());
             }
 
         }
